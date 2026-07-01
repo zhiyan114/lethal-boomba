@@ -3,7 +3,7 @@ schemaVersion = "0.0.1"
 
 [package]
 namespace = "FurryNet"
-name = "LethalBommba"
+name = "LethalBoomba"
 versionNumber = "1.0.0"
 description = "Add explosive scraps to all the moons"
 websiteUrl = "https://github.com/zhiyan114/lethal-boomba"
