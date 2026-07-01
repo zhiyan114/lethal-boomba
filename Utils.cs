@@ -1,6 +1,7 @@
 ﻿using GameNetcodeStuff;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using Unity.Netcode;
 using UnityEngine;
@@ -72,6 +73,16 @@ namespace LethalBoomba
                 render.enabled = false;
             if (obj.TryGetComponent<Collider>(out Collider collide))
                 collide.enabled = false;
+        }
+        public static void ExecuteRuntimeInitAttr(Type type)
+        {
+            var methods = type.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+            foreach (var method in methods)
+            {
+                var attributes = method.GetCustomAttributes(typeof(RuntimeInitializeOnLoadMethodAttribute), false);
+                if (attributes.Length == 0) continue;
+                method.Invoke(null, null);
+            }
         }
     }
 }

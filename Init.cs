@@ -27,23 +27,28 @@ namespace LethalBoomba
             // ItemManager.AddItem("Assets/AssetBundles/BombToolkit/NukeKa/NuKaProp.asset", 100);
 
             // NetCode Initializer
-            Type[] types = Assembly.GetExecutingAssembly().GetTypes();
-            foreach (Type type in types)
-            {
-                var methods = type.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
-                foreach (var method in methods)
-                {
-                    var attributes = method.GetCustomAttributes(typeof(RuntimeInitializeOnLoadMethodAttribute), false);
-                    if (attributes.Length > 0)
-                        method.Invoke(null, null);
-                }
-            }
-            logger.LogDebug("Called RuntimeInit on internal...");
+            //Type[] types = Assembly.GetExecutingAssembly().GetTypes();
+            //foreach (Type type in types)
+            //{
+            //    var methods = type.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+            //    foreach (var method in methods)
+            //    {
+            //        var attributes = method.GetCustomAttributes(typeof(RuntimeInitializeOnLoadMethodAttribute), false);
+            //        if (attributes.Length > 0)
+            //            method.Invoke(null, null);
+            //    }
+            //}
+            //logger.LogDebug("Called RuntimeInit on internal...");
 
             // Patch Code
             harmony.PatchAll(typeof(RoundPatch));
             harmony.PatchAll(typeof(NetworkHook));
             logger.LogInfo("RoundPatch Done...");
+
+            // Setup NetCode
+            Utils.ExecuteRuntimeInitAttr(typeof(BoomBaBehavior));
+            Utils.ExecuteRuntimeInitAttr(typeof(NuKaBehavior));
+            Utils.ExecuteRuntimeInitAttr(Assembly.GetExecutingAssembly().GetType("__GEN.NetworkVariableSerializationHelper"));
         }
     }
 
