@@ -4,7 +4,7 @@ schemaVersion = "0.0.1"
 [package]
 namespace = "FurryNet"
 name = "LethalBoomba"
-versionNumber = "1.0.0"
+versionNumber = "1.0.1"
 description = "Add explosive scraps to all the moons"
 websiteUrl = "https://github.com/zhiyan114/lethal-boomba"
 containsNsfwContent = false

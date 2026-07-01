@@ -1,4 +1,4 @@
-# LCS (Lethal Command Service)
+# LethalBoomba
 A mod adds two explosive scrap to all the lethal company moons
 
 # Type of Explosives
