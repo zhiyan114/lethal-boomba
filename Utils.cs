@@ -43,7 +43,7 @@ namespace LethalBoomba
                     float dist = Vector3.Distance(enemy.transform.position, position);
 
                     if (dist <= killRadius)
-                        enemy.KillEnemyServerRpc(enemy.enemyType.destroyOnDeath);
+                        enemy.KillEnemyServerRpc(enemy.enemyType.destroyOnDeath || !enemy.enemyType.canDie);
                 }
             }
 

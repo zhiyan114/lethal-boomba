@@ -36,7 +36,7 @@ namespace LethalBoomba
                 item = mainItem,
                 SpawnRate = spawnRate
             });
-            Init.logger.LogMessage($"ItemManager: Added item {mainItem.itemName} without custom behavior!");
+            Init.logger.LogInfo($"ItemManager: Added item {mainItem.itemName} without custom behavior!");
         }
         /// <summary>
         /// Setup asset and prepare for loading using custom item behavior implementation
@@ -53,7 +53,7 @@ namespace LethalBoomba
                 SpawnRate = spawnRate
             });
             mainItem.spawnPrefab.AddComponent<T>();
-            Init.logger.LogMessage($"ItemManager: Added item {mainItem.itemName} with custom behavior!");
+            Init.logger.LogInfo($"ItemManager: Added item {mainItem.itemName} with custom behavior!");
         }
         /// <summary>
         /// Obtain the Item object given configured asset's itemName
@@ -80,7 +80,7 @@ namespace LethalBoomba
             _items = new Dictionary<string, ItemManager>();
             bundle = AssetBundle.LoadFromFile(assetBundlePath);
             LargeExplosion = bundle.LoadAsset<GameObject>("Assets/AssetBundles/BombToolkit/NukeKa/Effect/NuKaBoomEffect.prefab");
-            Init.logger.LogMessage("ItemManager: Successfully Loaded Bundle...");
+            Init.logger.LogInfo("ItemManager: Successfully Loaded Bundle...");
 
         }
         /// <summary>
@@ -91,7 +91,7 @@ namespace LethalBoomba
         {
             foreach (ItemManager itemMGR in _items.Values)
                 netManager.AddNetworkPrefab(itemMGR.item.spawnPrefab);
-            Init.logger.LogMessage("ItemManager: Configured Network Prefabs");
+            Init.logger.LogInfo("ItemManager: Configured Network Prefabs");
         }
 
         private static bool ItemConfigured = false;
@@ -110,7 +110,7 @@ namespace LethalBoomba
                 foreach (SelectableLevel level in instance.levels)
                     level.spawnableScrap.Add(new SpawnableItemWithRarity(itemMGR.item, itemMGR.SpawnRate));
             }
-            Init.logger.LogMessage("ItemManager: Successfully Loaded all items to all maps");
+            Init.logger.LogInfo("ItemManager: Successfully Loaded all items to all maps");
 
             //// Unit TestKit
             //Init.logger.LogMessage("Running Tests...");

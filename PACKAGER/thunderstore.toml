@@ -1,0 +1,36 @@
+[config]
+schemaVersion = "0.0.1"
+
+[package]
+namespace = "FurryNet"
+name = "LethalBommba"
+versionNumber = "1.0.0"
+description = "Add explosive scraps to all the moons"
+websiteUrl = "https://github.com/zhiyan114/lethal-boomba"
+containsNsfwContent = false
+[package.dependencies]
+BepInEx-BepInExPack = "5.4.2305"
+
+[build]
+icon = "./icon.png"
+readme = "./pkgREADME.md"
+outdir = "./build"
+
+[[build.copy]]
+source = "../bin/Release/netstandard2.1/LethalBommba.dll"
+target = "/BepInEx/plugins/"
+
+[[build.copy]]
+source = "../bin/Release/netstandard2.1/Resources/bombpack"
+target = "/BepInEx/plugins/"
+
+[[build.copy]]
+source = "./CHANGELOG.md"
+target = "./CHANGELOG.md"
+
+[publish]
+repository = "https://thunderstore.io"
+communities = [ "lethal-company" ]
+lethal-company = [ "Mods", "Items", "BepInEx" ]
+
+

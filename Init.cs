@@ -12,7 +12,7 @@ namespace LethalBoomba
     [BepInPlugin(Guid, Name, Version)]
     public class Init: BaseUnityPlugin
     {
-        public const string Guid = "FURRYNET.BoomBa";
+        public const string Guid = "FurryNet.BoomBa";
         public const string Name = "BoomBa";
         public const string Version = "1.0.0";
 
@@ -38,12 +38,12 @@ namespace LethalBoomba
                         method.Invoke(null, null);
                 }
             }
-            logger.LogMessage("Called RuntimeInit on internal...");
+            logger.LogDebug("Called RuntimeInit on internal...");
 
             // Patch Code
             harmony.PatchAll(typeof(RoundPatch));
             harmony.PatchAll(typeof(NetworkHook));
-            logger.LogMessage("RoundPatch Done...");
+            logger.LogInfo("RoundPatch Done...");
         }
     }
 
