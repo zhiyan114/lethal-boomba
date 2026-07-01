@@ -1,0 +1,65 @@
+ManifestFileVersion: 0
+CRC: 3872371382
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 3a64dce890ebfd3046fc7a70f2f38cef
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 07fcbe3a47f1b85d5daf2a3bfedf15b5
+  IncrementalBuildHash:
+    serializedVersion: 2
+    Hash: 3a64dce890ebfd3046fc7a70f2f38cef
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 65
+  Script: {instanceID: 0}
+- Class: 82
+  Script: {instanceID: 0}
+- Class: 83
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 11500000, guid: c30496d6ae6d6f907456e10a94e01ec6, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 3c36d0a92cbb1f26a39169ef0eae393a, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+- Class: 198
+  Script: {instanceID: 0}
+- Class: 199
+  Script: {instanceID: 0}
+- Class: 213
+  Script: {instanceID: 0}
+- Class: 241
+  Script: {instanceID: 0}
+- Class: 243
+  Script: {instanceID: 0}
+- Class: 245
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/AssetBundles/BombToolkit/BoomBa/B00mbaProp.asset
+- Assets/AssetBundles/BombToolkit/NukeKa/Effect/NuKaBoomEffect.prefab
+- Assets/AssetBundles/BombToolkit/NukeKa/NuKaProp.asset
+- Assets/AssetBundles/BombToolkit/NukeKa/Sounds/NuKaBoom.ogg
+- Assets/AssetBundles/BombToolkit/BoomBa/Sounds/B00mbaBoom.ogg
+- Assets/AssetBundles/BombToolkit/BoomBa/Sounds/BoomBaCountdown.ogg
+Dependencies: []
