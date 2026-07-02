@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HarmonyLib;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -46,7 +47,10 @@ namespace LethalBoomba
         /// <param name="spawnRate">Item Spawn rate on moon</param>
         public static void AddItem<T>(string assetPath, int spawnRate) where T : GrabbableObject
         {
-            Item mainItem = bundle.LoadAsset<Item>(assetPath);
+            Item? mainItem = bundle.LoadAsset<Item>(assetPath);
+            if (mainItem == null)
+                throw new Exception($"Invalid asset bundle path: {assetPath}!");
+
             _items.Add(mainItem.itemName, new ItemManager
             {
                 item = mainItem,
@@ -69,7 +73,8 @@ namespace LethalBoomba
         /// Execute as early as possible (ONLY ONCE) to initialize
         /// AssetBundle
         /// </summary>
-        public static void InitFirst()
+        [RuntimeInitializeOnLoadMethod]
+        private static void InitFirst()
         {
             string assetBundlePath = Path.Combine(
                 Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
@@ -83,31 +88,32 @@ namespace LethalBoomba
             Init.logger.LogInfo("ItemManager: Successfully Loaded Bundle...");
 
         }
+
         /// <summary>
-        /// Run right before game starts but after NetworkManager is initialized (Only ONCE)
+        /// Handles setting up asset prefab with the network
         /// </summary>
-        /// <param name="netManager">Pass on NetworkManager instance</param>
-        public static void SetupNetPrefab(NetworkManager netManager)
+        /// <param name="__instance"></param>
+        [HarmonyPatch(typeof(GameNetworkManager), "Start")]
+        [HarmonyPostfix]
+        static void SetupNetPrefab(GameNetworkManager __instance)
         {
+            NetworkManager netManager = __instance.GetComponent<NetworkManager>();
             foreach (ItemManager itemMGR in _items.Values)
                 netManager.AddNetworkPrefab(itemMGR.item.spawnPrefab);
             Init.logger.LogInfo("ItemManager: Configured Network Prefabs");
         }
 
         private static bool ItemConfigured = false;
-        /// <summary>
-        /// Run before the game is ready but after user loads the save file.
-        /// Run ONLY once, though there is safety net to prevent this from execution multiple time
-        /// </summary>
-        /// <param name="instance">Pass on StartOfRound instance</param>
-        public static void SetupItemSpawn(StartOfRound instance)
+        [HarmonyPatch(typeof(StartOfRound), "Start")]
+        [HarmonyPostfix]
+        private static void SetupItemSpawn(StartOfRound __instance)
         {
             if (ItemConfigured) return;
             ItemConfigured = true;
             foreach(ItemManager itemMGR in _items.Values)
             {
-                instance.allItemsList.itemsList.Add(itemMGR.item);
-                foreach (SelectableLevel level in instance.levels)
+                __instance.allItemsList.itemsList.Add(itemMGR.item);
+                foreach (SelectableLevel level in __instance.levels)
                     level.spawnableScrap.Add(new SpawnableItemWithRarity(itemMGR.item, itemMGR.SpawnRate));
             }
             Init.logger.LogInfo("ItemManager: Successfully Loaded all items to all maps");

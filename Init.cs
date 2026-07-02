@@ -21,7 +21,7 @@ namespace LethalBoomba
 
         private void Awake()
         {
-            ItemManager.InitFirst();
+            Utils.ExecuteRuntimeInitAttr(typeof(ItemManager));
             ItemManager.AddItem<BoomBaBehavior>("Assets/AssetBundles/BombToolkit/BoomBa/B00mbaProp.asset", 60);
             ItemManager.AddItem<NuKaBehavior>("Assets/AssetBundles/BombToolkit/NukeKa/NuKaProp.asset", 30);
             // ItemManager.AddItem("Assets/AssetBundles/BombToolkit/NukeKa/NuKaProp.asset", 100);
@@ -41,8 +41,7 @@ namespace LethalBoomba
             //logger.LogDebug("Called RuntimeInit on internal...");
 
             // Patch Code
-            harmony.PatchAll(typeof(RoundPatch));
-            harmony.PatchAll(typeof(NetworkHook));
+            harmony.PatchAll(typeof(ItemManager));
             logger.LogInfo("Patch Done...");
 
             // Setup NetCode
@@ -50,28 +49,6 @@ namespace LethalBoomba
             Utils.ExecuteRuntimeInitAttr(typeof(NuKaBehavior));
             Utils.ExecuteRuntimeInitAttr(Assembly.GetExecutingAssembly().GetType("__GEN.NetworkVariableSerializationHelper"));
             logger.LogInfo("NetCode Init Done...");
-        }
-    }
-
-    [HarmonyPatch(typeof(StartOfRound))]
-    public class RoundPatch
-    {
-        [HarmonyPatch("Start")]
-        [HarmonyPostfix]
-        private static void StartPatch(StartOfRound __instance)
-        {
-            ItemManager.SetupItemSpawn(__instance);
-        }
-    }
-
-    [HarmonyPatch(typeof(GameNetworkManager))]
-    public class NetworkHook
-    {
-        [HarmonyPatch("Start")]
-        [HarmonyPostfix]
-        public static void NetStart(GameNetworkManager __instance)
-        {
-            ItemManager.SetupNetPrefab(__instance.GetComponent<NetworkManager>());
         }
     }
 }
