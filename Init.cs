@@ -14,7 +14,7 @@ namespace LethalBoomba
     {
         public const string Guid = "FurryNet.BoomBa";
         public const string Name = "BoomBa";
-        public const string Version = "1.0.0";
+        public const string Version = "1.0.2";
 
         public static readonly ManualLogSource logger = BepInEx.Logging.Logger.CreateLogSource(Guid);
         private static readonly Harmony harmony = new Harmony(Guid);
@@ -43,12 +43,13 @@ namespace LethalBoomba
             // Patch Code
             harmony.PatchAll(typeof(RoundPatch));
             harmony.PatchAll(typeof(NetworkHook));
-            logger.LogInfo("RoundPatch Done...");
+            logger.LogInfo("Patch Done...");
 
             // Setup NetCode
             Utils.ExecuteRuntimeInitAttr(typeof(BoomBaBehavior));
             Utils.ExecuteRuntimeInitAttr(typeof(NuKaBehavior));
             Utils.ExecuteRuntimeInitAttr(Assembly.GetExecutingAssembly().GetType("__GEN.NetworkVariableSerializationHelper"));
+            logger.LogInfo("NetCode Init Done...");
         }
     }
 

@@ -11,8 +11,6 @@ namespace LethalBoomba.Behaviors
     {
         public AudioClip preExplodeSound;
         public float countdownSec;
-        public AudioClip preExplodeFinalSound;
-        public float preExplodeFinalCD;
         private AudioSource BombSrc;
         private float blastRadius = 5f;
         NetworkVariable<bool> isDetonated = new NetworkVariable<bool>(false);
@@ -28,10 +26,8 @@ namespace LethalBoomba.Behaviors
             grabbable = true;
             isInFactory = true;
             itemProperties = ItemManager.GetItem("B00mba");
-            countdownSec = 5f;
-            preExplodeFinalCD = 3.5f;
-            preExplodeSound = ItemManager.bundle.LoadAsset<AudioClip>("Assets/AssetBundles/BombToolkit/BoomBa/Sounds/BoomBaCountdown.ogg");
-            preExplodeFinalSound = ItemManager.bundle.LoadAsset<AudioClip>("Assets/AssetBundles/BombToolkit/BoomBa/Sounds/B00mbaBoom.ogg");
+            countdownSec = 3.5f;
+            preExplodeSound = ItemManager.bundle.LoadAsset<AudioClip>("Assets/AssetBundles/BombToolkit/BoomBa/Sounds/B00mbaBoom.ogg");
 
             grenadeFallCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
             grenadeVerticalFallCurve = new AnimationCurve(
@@ -84,7 +80,7 @@ namespace LethalBoomba.Behaviors
             ExecuteStageClientRpc();
 
             // 3s buffers (mostly to let audio play out and buffers)
-            yield return new WaitForSeconds(countdownSec + preExplodeFinalCD + 3);
+            yield return new WaitForSeconds(countdownSec + 3);
             GetComponent<NetworkObject>().Despawn();
         }
 
@@ -104,8 +100,6 @@ namespace LethalBoomba.Behaviors
 
             BombSrc.PlayOneShot(preExplodeSound);
             yield return new WaitForSeconds(countdownSec);
-            BombSrc.PlayOneShot(preExplodeFinalSound);
-            yield return new WaitForSeconds(preExplodeFinalCD);
             Utils.Explode(GetComponent<Transform>().position, blastRadius);
             HUDManager.Instance.ShakeCamera(ScreenShakeType.Big);
             Utils.HideNetObject(gameObject);
