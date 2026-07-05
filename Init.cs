@@ -14,7 +14,7 @@ namespace LethalBoomba
     {
         public const string Guid = "FurryNet.BoomBa";
         public const string Name = "BoomBa";
-        public const string Version = "1.0.2";
+        public const string Version = "1.1.0";
 
         public static readonly ManualLogSource logger = BepInEx.Logging.Logger.CreateLogSource(Guid);
         private static readonly Harmony harmony = new Harmony(Guid);
@@ -24,7 +24,7 @@ namespace LethalBoomba
             Utils.ExecuteRuntimeInitAttr(typeof(ItemManager));
             ItemManager.AddItem<BoomBaBehavior>("Assets/AssetBundles/BombToolkit/BoomBa/B00mbaProp.asset", 60);
             ItemManager.AddItem<NuKaBehavior>("Assets/AssetBundles/BombToolkit/NukeKa/NuKaProp.asset", 30);
-            // ItemManager.AddItem("Assets/AssetBundles/BombToolkit/NukeKa/NuKaProp.asset", 100);
+            ItemManager.AddItem<LotTaBehavior>("Assets/AssetBundles/BombToolkit/LotTa/LottaProp.asset", 50);
 
             // NetCode Initializer
             //Type[] types = Assembly.GetExecutingAssembly().GetTypes();
@@ -44,11 +44,9 @@ namespace LethalBoomba
             harmony.PatchAll(typeof(ItemManager));
             logger.LogInfo("Patch Done...");
 
-            // Setup NetCode
-            Utils.ExecuteRuntimeInitAttr(typeof(BoomBaBehavior));
-            Utils.ExecuteRuntimeInitAttr(typeof(NuKaBehavior));
+            // Setup NetVariable
             Utils.ExecuteRuntimeInitAttr(Assembly.GetExecutingAssembly().GetType("__GEN.NetworkVariableSerializationHelper"));
-            logger.LogInfo("NetCode Init Done...");
+            logger.LogInfo("NetVariable Init Done...");
         }
     }
 }
