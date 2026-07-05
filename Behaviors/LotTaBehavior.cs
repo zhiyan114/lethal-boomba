@@ -11,11 +11,13 @@ namespace LethalBoomba.Behaviors
 {
     public class LotTaBehavior : GrabbableObject
     {
+        public static List<LotTaBehavior> UnscratchedTickets = new List<LotTaBehavior>();
         private AudioSource AudioSrc;
         public AudioClip ScratchSound;
         public float countdownSec;
 
-        public NetworkVariable<int> scrapVal = new NetworkVariable<int>(0);
+        public NetworkVariable<int> scrapVal = new NetworkVariable<int>(-1);
+        public bool isScratched { get => scrapVal.Value != scrapValue || !UnscratchedTickets.Contains(this); }
 
         private void Awake()
         {
@@ -26,14 +28,25 @@ namespace LethalBoomba.Behaviors
             itemProperties = ItemManager.GetItem("LotTa");
             countdownSec = 1f;
             ScratchSound = ItemManager.bundle.LoadAsset<AudioClip>("Assets/AssetBundles/BombToolkit/LotTa/sounds/LottaActivate.ogg");
-
-            scrapVal.OnValueChanged += (_,val) => SetScrapValue(val);
+            scrapVal.OnValueChanged += serverValUpdate;
         }
 
-        public override void Start()
+        private void serverValUpdate(int _, int val)
         {
-            // @TODO: Determine if the item is spawned during oribit (mark as non-scratchable) or on the moon
-            base.Start();
+            UnscratchedTickets.Remove(this);
+            SetScrapValue(val);
+        }
+
+        public override void OnNetworkSpawn()
+        {
+            UnscratchedTickets.Add(this);
+            base.OnNetworkSpawn();
+        }
+
+        public override void OnNetworkDespawn()
+        {
+            UnscratchedTickets.Remove(this);
+            base.OnNetworkDespawn();
         }
 
         public override void ItemActivate(bool used, bool buttonDown = true)
@@ -41,21 +54,31 @@ namespace LethalBoomba.Behaviors
             // Scratch Ticket
             if (!buttonDown) return;
             if (!base.IsOwner) return;
-            if (scrapVal.Value != 0) return;
-            playerHeldBy.activatingItem = true;
+            if (isScratched) return;
+            if (playerHeldBy.activatingItem) return;
+            playerHeldBy.activatingItem = true; //@TODO: Disable this when HandleTicketActivation finishes for object owner
             StartScratchServerRpc();
         }
 
         [Rpc(SendTo.Server)]
         private void StartScratchServerRpc(RpcParams rpcParam = default)
         {
+            if (isScratched) return;
+
+            // Handle scenario where player activates ticket that's spawned through "cheat" and potentially breaks the game state
+            // This should silently update the ticket to the correct state and prevent breaking change form happening
+            if (!StartOfRound.Instance.shipHasLanded)
+            {
+                scrapVal.Value = scrapValue;
+                return;
+            }
             StartCoroutine(ExecuteReq());
         }
 
         private IEnumerator ExecuteReq()
         {
             if (!NetworkManager.Singleton.IsServer) yield break;
-            if (scrapVal.Value != 0) yield break;
+            if (isScratched) yield break;
             LottaOutcome.Opts selOpt = LottaOutcome.getRandItem();
             switch (selOpt)
             {
@@ -85,7 +108,7 @@ namespace LethalBoomba.Behaviors
             if (!NetworkManager.Singleton.IsServer) yield break;
             ExecuteStageClientRpc(opt);
             yield return new WaitForSeconds(countdownSec + 2);
-            switch(opt)
+            switch (opt)
             {
                 case LottaOutcome.Opts.x1Multi:
                     scrapVal.Value = scrapValue;
@@ -111,11 +134,12 @@ namespace LethalBoomba.Behaviors
         [Rpc(SendTo.ClientsAndHost)]
         private void ExecuteStageClientRpc(LottaOutcome.Opts opt)
         {
-            StartCoroutine(CountdownRoutine(opt));
+            StartCoroutine(HandleTicketActivation(opt));
         }
-        private IEnumerator CountdownRoutine(LottaOutcome.Opts SelOpt) {
-            
-            //@ TODO: IMPLEMENT Activation Process
+        private IEnumerator HandleTicketActivation(LottaOutcome.Opts SelOpt)
+        {
+
+            //@ TODO: IMPLEMENT Activation Process (Consider HUDManager change + Walkie Talkie sound replication)
             //
             //if (!NetworkManager.Singleton.IsClient)
             //    yield break;
@@ -134,6 +158,12 @@ namespace LethalBoomba.Behaviors
             //GameNetworkManager.Instance.localPlayerController.KillPlayer(Vector3.zero, causeOfDeath: CauseOfDeath.Blast);
             //Utils.HideNetObject(gameObject);
         }
+
+        public override void SetControlTipsForItem()
+        {
+            bool allowScratch = !isScratched && StartOfRound.Instance?.shipHasLanded == true;
+            HUDManager.Instance.ChangeControlTipMultiple(allowScratch ? itemProperties.toolTips : new string[] { }, holdingItem: true, itemProperties);
+        }
     }
 
     public class LottaOutcome
@@ -149,7 +179,8 @@ namespace LethalBoomba.Behaviors
             x1_5Multi,
             x2Multi,
             x5Multi,
-            x10Multi
+            x10Multi,
+            InvalidState, // Only happens if the item is spawned in orbit with a mod and user tries to activate it in bad state
         }
         public readonly static HashSet<LottaOutcome> StatTable = new HashSet<LottaOutcome>()
         {
@@ -196,9 +227,9 @@ namespace LethalBoomba.Behaviors
         public static void MarkAllLottoUnscratchable()
         {
             if (!NetworkManager.Singleton.IsServer) return;
-            LotTaBehavior[] tickets = UnityEngine.Object.FindObjectsByType<LotTaBehavior>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
-            foreach (LotTaBehavior ticket in tickets)
-                if (ticket.IsSpawned && ticket.scrapVal.Value == 0)
+            // LotTaBehavior[] tickets = UnityEngine.Object.FindObjectsByType<LotTaBehavior>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+            foreach (LotTaBehavior ticket in LotTaBehavior.UnscratchedTickets)
+                if (ticket.IsSpawned && !ticket.isScratched)
                     ticket.scrapVal.Value = ticket.scrapValue;
         }
     }
