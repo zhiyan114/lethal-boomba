@@ -1,6 +1,6 @@
 # 1.1.0
 - Added new item "LotTa" (explosive lottery ticket). Inspired by [LuckyLotteryTicket](https://thunderstore.io/c/lethal-company/p/BLUJAY_LETHAL_MODS/LuckyLotteryTicket/)
-- B00mBa activation sound now plays through walkies
+- B00mBa activation sound now plays through walkies and grabbable by enemy
 - More internal refactoring (slightly cutting down code size)
 
 # 1.0.2

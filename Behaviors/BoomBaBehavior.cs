@@ -25,6 +25,7 @@ namespace LethalBoomba.Behaviors
             BombSrc = GetComponent<AudioSource>();
             grabbable = true;
             isInFactory = true;
+            grabbableToEnemies = true;
             itemProperties = ItemManager.GetItem("B00mba");
             countdownSec = 3.5f;
             preExplodeSound = ItemManager.bundle.LoadAsset<AudioClip>("Assets/AssetBundles/BombToolkit/BoomBa/Sounds/B00mbaBoom.ogg");
