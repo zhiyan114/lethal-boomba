@@ -70,10 +70,7 @@ namespace LethalBoomba.Behaviors
             BombSrc.PlayOneShot(preExplodeSound);
             yield return new WaitForSeconds(countdownSec);
 
-            // Show dramatic nuke effect here (if there's one)
-            //Utils.Explode(GetComponent<Transform>().position, blastRadius);
-            //@TODO: Custom Explosion and stuff here
-            // GameObject Explosion = UnityEngine.Object.Instantiate(StartOfRound.Instance.explosionPrefab, GetComponent<Transform>().position, Quaternion.Euler(-90f, 0f, 0f), RoundManager.Instance.mapPropsContainer.transform);
+            // Show dramatic nuke effect here
             GameObject LargeExplosion = Instantiate(ItemManager.LargeExplosion, GetComponent<Transform>().position, Quaternion.Euler(-90f, 0f, 0f), RoundManager.Instance.mapPropsContainer.transform);
             LargeExplosion.SetActive(value: true);
             HUDManager.Instance.ShakeCamera(ScreenShakeType.VeryStrong);

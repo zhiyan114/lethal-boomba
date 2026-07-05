@@ -6,6 +6,7 @@ using System;
 using System.Reflection;
 using Unity.Netcode;
 using UnityEngine;
+using static LethalBoomba.Behaviors.LotTaBehavior;
 
 namespace LethalBoomba
 {
@@ -29,6 +30,7 @@ namespace LethalBoomba
 
             // Patch Code
             harmony.PatchAll(typeof(ItemManager));
+            harmony.PatchAll(typeof(LottaOutcome));
             logger.LogInfo("Patch Done...");
 
             // Setup NetVariable
