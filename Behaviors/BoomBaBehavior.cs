@@ -28,7 +28,6 @@ namespace LethalBoomba.Behaviors
             itemProperties = ItemManager.GetItem("B00mba");
             countdownSec = 3.5f;
             preExplodeSound = ItemManager.bundle.LoadAsset<AudioClip>("Assets/AssetBundles/BombToolkit/BoomBa/Sounds/B00mbaBoom.ogg");
-
             grenadeFallCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
             grenadeVerticalFallCurve = new AnimationCurve(
                 new Keyframe(0f,    0f,     0f,  0f),
@@ -99,6 +98,7 @@ namespace LethalBoomba.Behaviors
             }
 
             BombSrc.PlayOneShot(preExplodeSound);
+            WalkieTalkie.TransmitOneShotAudio(BombSrc, preExplodeSound);
             yield return new WaitForSeconds(countdownSec);
             Utils.Explode(GetComponent<Transform>().position, blastRadius);
             HUDManager.Instance.ShakeCamera(ScreenShakeType.Big);
