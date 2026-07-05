@@ -12,8 +12,6 @@ namespace LethalBoomba.Behaviors
         public float countdownSec;
         public float beforeKillcdSec;
         private AudioSource BombSrc;
-        private AudioSource GlobalExplode;
-        private float blastRadius = 5f;
         NetworkVariable<bool> isDetonated = new NetworkVariable<bool>(false);
 
         private void Awake()
