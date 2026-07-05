@@ -21,24 +21,11 @@ namespace LethalBoomba
 
         private void Awake()
         {
+            // Setup Items
             Utils.ExecuteRuntimeInitAttr(typeof(ItemManager));
             ItemManager.AddItem<BoomBaBehavior>("Assets/AssetBundles/BombToolkit/BoomBa/B00mbaProp.asset", 60);
             ItemManager.AddItem<NuKaBehavior>("Assets/AssetBundles/BombToolkit/NukeKa/NuKaProp.asset", 30);
             ItemManager.AddItem<LotTaBehavior>("Assets/AssetBundles/BombToolkit/LotTa/LottaProp.asset", 50);
-
-            // NetCode Initializer
-            //Type[] types = Assembly.GetExecutingAssembly().GetTypes();
-            //foreach (Type type in types)
-            //{
-            //    var methods = type.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
-            //    foreach (var method in methods)
-            //    {
-            //        var attributes = method.GetCustomAttributes(typeof(RuntimeInitializeOnLoadMethodAttribute), false);
-            //        if (attributes.Length > 0)
-            //            method.Invoke(null, null);
-            //    }
-            //}
-            //logger.LogDebug("Called RuntimeInit on internal...");
 
             // Patch Code
             harmony.PatchAll(typeof(ItemManager));

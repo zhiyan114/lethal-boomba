@@ -37,8 +37,20 @@ namespace LethalBoomba
                 item = mainItem,
                 SpawnRate = spawnRate
             });
+
+            // Auto-Config missing PhysicsProp as needed (Prob used to test prefab before adding custom behaviors)
+            if(!mainItem.spawnPrefab.TryGetComponent<PhysicsProp>(out var _))
+            {
+                PhysicsProp PropConf = mainItem.spawnPrefab.AddComponent<PhysicsProp>();
+                PropConf.grabbable = true;
+                PropConf.isInFactory = true;
+                PropConf.grabbableToEnemies = true;
+                PropConf.itemProperties = mainItem;
+            }
+                
             Init.logger.LogInfo($"ItemManager: Added item {mainItem.itemName} without custom behavior!");
         }
+
         /// <summary>
         /// Setup asset and prepare for loading using custom item behavior implementation
         /// </summary>
@@ -56,10 +68,12 @@ namespace LethalBoomba
                 item = mainItem,
                 SpawnRate = spawnRate
             });
+
             mainItem.spawnPrefab.AddComponent<T>();
             Utils.ExecuteRuntimeInitAttr(typeof(T));
             Init.logger.LogInfo($"ItemManager: Added item {mainItem.itemName} with custom behavior!");
         }
+
         /// <summary>
         /// Obtain the Item object given configured asset's itemName
         /// </summary>
