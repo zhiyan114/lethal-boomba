@@ -16,6 +16,7 @@ namespace LethalBoomba.Behaviors
         public static List<LotTaBehavior> UnscratchedTickets = new List<LotTaBehavior>();
         private AudioSource AudioSrc;
         public AudioClip ScratchSound;
+        public AudioClip WinnerSFX;
         public float countdownSec;
 
         public NetworkVariable<int> scrapVal = new NetworkVariable<int>(-1);
@@ -31,6 +32,7 @@ namespace LethalBoomba.Behaviors
             itemProperties = ItemManager.GetItem("LotTa");
             countdownSec = 1f;
             ScratchSound = ItemManager.bundle.LoadAsset<AudioClip>("Assets/AssetBundles/BombToolkit/LotTa/sounds/LottaActivate.ogg");
+            WinnerSFX = ItemManager.bundle.LoadAsset<AudioClip>("Assets/AssetBundles/BombToolkit/LotTa/sounds/LottaWon.ogg");
             scrapVal.OnValueChanged += (_, val) => SetScrapValue(val);
             Result.OnValueChanged += serverResUpdate;
         }
@@ -94,7 +96,7 @@ namespace LethalBoomba.Behaviors
                     yield return new WaitForSeconds(1);
                     Utils.Explode(transform.position, 10);
                     Utils.HideNetObject(gameObject);
-                    break;
+                    yield break;
                 case LottaOutcome.Opts.RandEnemy:
                     if (this.IsOwner)
                     {
@@ -104,7 +106,7 @@ namespace LethalBoomba.Behaviors
                             playerHeldBy.DiscardHeldObject();
                     }
                     Utils.HideNetObject(gameObject);
-                    break;
+                    yield break;
                 case LottaOutcome.Opts.RandTrap:
                     if (this.IsOwner)
                     {
@@ -114,35 +116,50 @@ namespace LethalBoomba.Behaviors
                             playerHeldBy.DiscardHeldObject();
                     }
                     Utils.HideNetObject(gameObject);
-                    break;
+                    yield break;
                 case LottaOutcome.Opts.ZeroValue:
-                    if (!this.IsOwner) yield break;
-                    HUDManager.Instance.DisplayTip("LotTa Outcome", "Well, at least you only lose all the value of the ticket!");
-                    break;
+                    if (this.IsOwner)
+                    {
+                        HUDManager.Instance.DisplayTip("LotTa Outcome", "Well, at least you only lose all the value of the ticket!");
+                        playerHeldBy.activatingItem = false;
+                    }
+                    yield break;
                 case LottaOutcome.Opts.x1Multi:
-                    if (!this.IsOwner) yield break;
-                    HUDManager.Instance.DisplayTip("LotTa Outcome", "Kinda lucky that you didnt lose any ticket value!");
+                    if (this.IsOwner)
+                        HUDManager.Instance.DisplayTip("LotTa Outcome", "Kinda lucky that you didnt lose any ticket value!");
                     break;
                 case LottaOutcome.Opts.x1_5Multi:
-                    if (!this.IsOwner) yield break;
-                    HUDManager.Instance.DisplayTip("LotTa Outcome", $"Congrat, you got x1.5 more value on the ticket! Total Value: {(isScratched ? scrapValue : scrapValue * 1.5f)}");
+                    if (this.IsOwner)
+                        HUDManager.Instance.DisplayTip("LotTa Outcome", $"Congrat, you got x1.5 more value on the ticket! Total Value: {(isScratched ? scrapValue : scrapValue * 1.5f)}");
                     break;
                 case LottaOutcome.Opts.x2Multi:
-                    if (!this.IsOwner) yield break;
-                    HUDManager.Instance.DisplayTip("LotTa Outcome", $"Wow, you got x2 more value on the ticket! Total Value: {(isScratched ? scrapValue : scrapValue * 2f)}");
+                    if (this.IsOwner)
+                        HUDManager.Instance.DisplayTip("LotTa Outcome", $"Wow, you got x2 more value on the ticket! Total Value: {(isScratched ? scrapValue : scrapValue * 2f)}");
                     break;
                 case LottaOutcome.Opts.x5Multi:
-                    if (!this.IsOwner) yield break;
-                    HUDManager.Instance.DisplayTip("LotTa Outcome", $"Crazy luck, you got x5 more value on the ticket! Total Value: {(isScratched ? scrapValue : scrapValue * 5f)}");
+                    if (this.IsOwner)
+                        HUDManager.Instance.DisplayTip("LotTa Outcome", $"Crazy luck, you got x5 more value on the ticket! Total Value: {(isScratched ? scrapValue : scrapValue * 5f)}");
                     break;
                 case LottaOutcome.Opts.x10Multi:
-                    if (!this.IsOwner) yield break;
-                    HUDManager.Instance.DisplayTip("LotTa Outcome", $"Insane luck, you got x10 more value on the ticket! Total Value: {(isScratched ? scrapValue : scrapValue * 10f)}");
+                    if (this.IsOwner)
+                        HUDManager.Instance.DisplayTip("LotTa Outcome", $"Insane luck, you got x10 more value on the ticket! Total Value: {(isScratched ? scrapValue : scrapValue * 10f)}");
                     break;
             }
-
-            if (this.IsOwner && playerHeldBy != null)
+            //@TODO: The code below should only be accessable to multiplier x1.5 and above AND add custom party sfx to it as well
+            // Handle post-multiplier selection
+            if (this.IsOwner)
                 playerHeldBy.activatingItem = false;
+            if(Utils.confettiPrefab && (byte)Result.Value > (byte)Opts.x1Multi)
+            {
+                UnityEngine.Object.Instantiate(
+                    Utils.confettiPrefab,
+                    transform.position,
+                    Quaternion.identity,
+                    (!isInElevator) ? RoundManager.Instance.mapPropsContainer.transform : StartOfRound.Instance.elevatorTransform);
+                AudioSrc.PlayOneShot(WinnerSFX);
+                WalkieTalkie.TransmitOneShotAudio(AudioSrc, WinnerSFX);
+            }
+                
         }
 
         [Rpc(SendTo.Server)]
@@ -234,11 +251,13 @@ namespace LethalBoomba.Behaviors
         // Global
         public enum Opts : byte
         {
+            // General Purpose Lotta states
             Unselected,
             ZeroValue,
             Explosion,
             RandEnemy,
             RandTrap,
+            // Multiplier with value > 0 must and only go below here (except NoState)
             x1Multi,
             x1_5Multi,
             x2Multi,
@@ -313,18 +332,18 @@ namespace LethalBoomba.Behaviors
         private int chance { get; set; }
 
         [HarmonyPatch(typeof(StartOfRound), "ShipLeave")]
-        [HarmonyPrefix]
+        [HarmonyPostfix]
         public static void MarkAllLottoUnscratchable()
         {
             if (!NetworkManager.Singleton.IsServer) return;
             // LotTaBehavior[] tickets = UnityEngine.Object.FindObjectsByType<LotTaBehavior>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
-            foreach (LotTaBehavior ticket in LotTaBehavior.UnscratchedTickets)
+            foreach (LotTaBehavior ticket in LotTaBehavior.UnscratchedTickets.ToArray())
                 if (ticket.IsSpawned && !ticket.isScratched)
                 {
                     ticket.scrapVal.Value = ticket.scrapValue;
                     ticket.Result.Value = Opts.NoState;
                 }
-                    
+            LotTaBehavior.UnscratchedTickets.Clear();
         }
     }
 }

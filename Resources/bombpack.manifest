@@ -1,15 +1,15 @@
 ManifestFileVersion: 0
-CRC: 3662362908
+CRC: 2538769745
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: e1f3e690413902e57718b79817d7146e
+    Hash: 1c6ab35a826351b9b7b42de0336852bb
   TypeTreeHash:
     serializedVersion: 2
     Hash: 07fcbe3a47f1b85d5daf2a3bfedf15b5
   IncrementalBuildHash:
     serializedVersion: 2
-    Hash: e1f3e690413902e57718b79817d7146e
+    Hash: 1c6ab35a826351b9b7b42de0336852bb
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -62,5 +62,6 @@ Assets:
 - Assets/AssetBundles/BombToolkit/NukeKa/NuKaProp.asset
 - Assets/AssetBundles/BombToolkit/NukeKa/Sounds/NuKaBoom.ogg
 - Assets/AssetBundles/BombToolkit/BoomBa/Sounds/B00mbaBoom.ogg
+- Assets/AssetBundles/BombToolkit/LotTa/sounds/LottaWon.ogg
 - Assets/AssetBundles/BombToolkit/LotTa/sounds/LottaActivate.ogg
 Dependencies: []

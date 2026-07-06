@@ -2,6 +2,7 @@
 using HarmonyLib;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using Unity.Netcode;
@@ -13,6 +14,7 @@ namespace LethalBoomba
     {
         public static List<EnemyType> globalEnemies = new List<EnemyType>();
         public static List<IndoorMapHazardType> globalTraps = new List<IndoorMapHazardType>();
+        public static GameObject? confettiPrefab;
         public static void Explode(
         Vector3 position,
         float killRadius,
@@ -98,6 +100,11 @@ namespace LethalBoomba
             Utils.globalEnemies = new List<EnemyType>(Resources.FindObjectsOfTypeAll<EnemyType>());
             Utils.globalTraps = new List<IndoorMapHazardType>(Resources.FindObjectsOfTypeAll<IndoorMapHazardType>());
             Init.logger.LogInfo("Enemy/Trap data fetched!");
+
+            Utils.confettiPrefab = Resources.FindObjectsOfTypeAll<StunGrenadeItem>()
+                .FirstOrDefault(k => k.itemProperties.itemName == "Easter egg")
+                ?.stunGrenadeExplosion;
+            Init.logger.LogInfo($"Easter Egg Confetti found: {Utils.confettiPrefab != null}");
         }
     }
 }
