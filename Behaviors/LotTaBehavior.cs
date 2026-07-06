@@ -65,9 +65,6 @@ namespace LethalBoomba.Behaviors
 
         private IEnumerator HandleTicketActivation()
         {
-
-            //@ TODO: IMPLEMENT Activation Process (Consider HUDManager change + Walkie Talkie sound replication)
-
             if (!NetworkManager.Singleton.IsClient)
                 yield break;
 
