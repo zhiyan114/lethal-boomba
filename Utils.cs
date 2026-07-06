@@ -1,4 +1,5 @@
 ﻿using GameNetcodeStuff;
+using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -10,10 +11,11 @@ namespace LethalBoomba
 {
     public static class Utils
     {
+        public static List<EnemyType> globalEnemies = new List<EnemyType>();
+        public static List<IndoorMapHazardType> globalTraps = new List<IndoorMapHazardType>();
         public static void Explode(
         Vector3 position,
         float killRadius,
-        int damage = 999,
         float force = 10f)
         {
             if (!NetworkManager.Singleton.IsClient) return;
@@ -83,6 +85,19 @@ namespace LethalBoomba
                 if (attributes.Length == 0) continue;
                 method.Invoke(null, null);
             }
+        }
+    }
+
+    // Patch and stuff 
+    public static class UtilHelper
+    {
+        [HarmonyPatch(typeof(GameNetworkManager), "Start")]
+        [HarmonyPostfix]
+        private static void FetchGameObjects()
+        {
+            Utils.globalEnemies = new List<EnemyType>(Resources.FindObjectsOfTypeAll<EnemyType>());
+            Utils.globalTraps = new List<IndoorMapHazardType>(Resources.FindObjectsOfTypeAll<IndoorMapHazardType>());
+            Init.logger.LogInfo("Enemy/Trap data fetched!");
         }
     }
 }

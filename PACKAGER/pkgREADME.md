@@ -32,7 +32,7 @@ Scrap Info:
 Activation Probabilities:
 - 30% Loss Value
     - 15% - Ticket lose all its value
-    - 15% - Explosion (radius of 5)
+    - 15% - Explosion (radius of 10)
 - 10% Surprise Spawn
     - 5% - Random Enemy Spawns on you (Types of entity depends on if you're inside the facility or not)
     - 5% - Random Trap Spawns on you

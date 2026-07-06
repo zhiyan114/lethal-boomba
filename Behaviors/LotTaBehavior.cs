@@ -3,9 +3,11 @@ using HarmonyLib;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
 using Unity.Netcode;
 using UnityEngine;
+using static LethalBoomba.Behaviors.LottaOutcome;
 
 namespace LethalBoomba.Behaviors
 {
@@ -17,7 +19,8 @@ namespace LethalBoomba.Behaviors
         public float countdownSec;
 
         public NetworkVariable<int> scrapVal = new NetworkVariable<int>(-1);
-        public bool isScratched { get => scrapVal.Value != scrapValue || !UnscratchedTickets.Contains(this); }
+        public NetworkVariable<LottaOutcome.Opts> Result = new NetworkVariable<Opts>(LottaOutcome.Opts.Unselected);
+        public bool isScratched { get => Result.Value != LottaOutcome.Opts.Unselected; }
 
         private void Awake()
         {
@@ -28,13 +31,14 @@ namespace LethalBoomba.Behaviors
             itemProperties = ItemManager.GetItem("LotTa");
             countdownSec = 1f;
             ScratchSound = ItemManager.bundle.LoadAsset<AudioClip>("Assets/AssetBundles/BombToolkit/LotTa/sounds/LottaActivate.ogg");
-            scrapVal.OnValueChanged += serverValUpdate;
+            scrapVal.OnValueChanged += (_, val) => SetScrapValue(val);
+            Result.OnValueChanged += serverResUpdate;
         }
 
-        private void serverValUpdate(int _, int val)
+        private void serverResUpdate(LottaOutcome.Opts old, LottaOutcome.Opts val)
         {
-            UnscratchedTickets.Remove(this);
-            SetScrapValue(val);
+            if(old == Opts.Unselected && val != Opts.Unselected)
+                UnscratchedTickets.Remove(this);
         }
 
         public override void OnNetworkSpawn()
@@ -51,13 +55,97 @@ namespace LethalBoomba.Behaviors
 
         public override void ItemActivate(bool used, bool buttonDown = true)
         {
-            // Scratch Ticket
-            if (!buttonDown) return;
-            if (!base.IsOwner) return;
             if (isScratched) return;
             if (playerHeldBy.activatingItem) return;
-            playerHeldBy.activatingItem = true; //@TODO: Disable this when HandleTicketActivation finishes for object owner
-            StartScratchServerRpc();
+            if (base.IsOwner)
+                playerHeldBy.activatingItem = true;
+
+            StartCoroutine(HandleTicketActivation());
+        }
+
+        private IEnumerator HandleTicketActivation()
+        {
+
+            //@ TODO: IMPLEMENT Activation Process (Consider HUDManager change + Walkie Talkie sound replication)
+
+            if (!NetworkManager.Singleton.IsClient)
+                yield break;
+
+            // Scratch sfx
+            AudioSrc.PlayOneShot(ScratchSound);
+            WalkieTalkie.TransmitOneShotAudio(AudioSrc, ScratchSound);
+            yield return new WaitForSeconds(1);
+            if(base.IsOwner) StartScratchServerRpc();
+            yield return new WaitUntil(() => isScratched);
+
+            switch (Result.Value)
+            {
+                case Opts.NoState:
+                    HUDManager.Instance.DisplayTip("LotTa Outcome", "Invalid State Detected (The item was spawned by a mod while in an invalid state :p)");
+                    playerHeldBy.activatingItem = false;
+                    yield break;
+                case LottaOutcome.Opts.Explosion:
+                    if (this.IsOwner)
+                    {
+                        HUDManager.Instance.DisplayTip("LotTa Outcome", "Aww, you got explosion!");
+                        playerHeldBy.activatingItem = false;
+                        if (NetworkObject.IsSpawned)
+                            playerHeldBy.DiscardHeldObject();
+
+                    }
+
+                    yield return new WaitForSeconds(1);
+                    Utils.Explode(transform.position, 10);
+                    Utils.HideNetObject(gameObject);
+                    break;
+                case LottaOutcome.Opts.RandEnemy:
+                    if (this.IsOwner)
+                    {
+                        HUDManager.Instance.DisplayTip("LotTa Outcome", "Aww, you got random enemy spawned on you!");
+                        playerHeldBy.activatingItem = false;
+                        if (NetworkObject.IsSpawned)
+                            playerHeldBy.DiscardHeldObject();
+                    }
+                    Utils.HideNetObject(gameObject);
+                    break;
+                case LottaOutcome.Opts.RandTrap:
+                    if (this.IsOwner)
+                    {
+                        HUDManager.Instance.DisplayTip("LotTa Outcome", "Aww, you got random trap spawned on you!");
+                        playerHeldBy.activatingItem = false;
+                        if (NetworkObject.IsSpawned)
+                            playerHeldBy.DiscardHeldObject();
+                    }
+                    Utils.HideNetObject(gameObject);
+                    break;
+                case LottaOutcome.Opts.ZeroValue:
+                    if (!this.IsOwner) yield break;
+                    HUDManager.Instance.DisplayTip("LotTa Outcome", "Well, at least you only lose all the value of the ticket!");
+                    break;
+                case LottaOutcome.Opts.x1Multi:
+                    if (!this.IsOwner) yield break;
+                    HUDManager.Instance.DisplayTip("LotTa Outcome", "Kinda lucky that you didnt lose any ticket value!");
+                    break;
+                case LottaOutcome.Opts.x1_5Multi:
+                    if (!this.IsOwner) yield break;
+                    HUDManager.Instance.DisplayTip("LotTa Outcome", $"Congrat, you got x1.5 more value on the ticket! Total Value: {(isScratched ? scrapValue : scrapValue * 1.5f)}");
+                    break;
+                case LottaOutcome.Opts.x2Multi:
+                    if (!this.IsOwner) yield break;
+                    HUDManager.Instance.DisplayTip("LotTa Outcome", $"Wow, you got x2 more value on the ticket! Total Value: {(isScratched ? scrapValue : scrapValue * 2f)}");
+                    break;
+                case LottaOutcome.Opts.x5Multi:
+                    if (!this.IsOwner) yield break;
+                    HUDManager.Instance.DisplayTip("LotTa Outcome", $"Crazy luck, you got x5 more value on the ticket! Total Value: {(isScratched ? scrapValue : scrapValue * 5f)}");
+                    break;
+                case LottaOutcome.Opts.x10Multi:
+                    if (!this.IsOwner) yield break;
+                    HUDManager.Instance.DisplayTip("LotTa Outcome", $"Insane luck, you got x10 more value on the ticket! Total Value: {(isScratched ? scrapValue : scrapValue * 10f)}");
+                    break;
+            }
+
+            if (this.IsOwner && playerHeldBy != null)
+                playerHeldBy.activatingItem = false;
         }
 
         [Rpc(SendTo.Server)]
@@ -70,12 +158,16 @@ namespace LethalBoomba.Behaviors
             if (!StartOfRound.Instance.shipHasLanded)
             {
                 scrapVal.Value = scrapValue;
+                Result.Value = Opts.NoState;
                 return;
             }
-            StartCoroutine(ExecuteReq());
+            ulong senderClientId = rpcParam.Receive.SenderClientId;
+            PlayerControllerB owner = StartOfRound.Instance.allPlayerScripts
+    .FirstOrDefault(p => p.OwnerClientId == senderClientId);
+            StartCoroutine(ExecuteReq(owner));
         }
 
-        private IEnumerator ExecuteReq()
+        private IEnumerator ExecuteReq(PlayerControllerB owner)
         {
             if (!NetworkManager.Singleton.IsServer) yield break;
             if (isScratched) yield break;
@@ -83,31 +175,32 @@ namespace LethalBoomba.Behaviors
             switch (selOpt)
             {
                 case LottaOutcome.Opts.Explosion:
-                    yield return StartClientRpc(selOpt);
-                    yield return new WaitForSeconds(999); // Replace 999 with time needed for explosion to execute
+                    yield return ProcessState(selOpt);
+                    yield return new WaitForSeconds(2); // 1s before explosion + 1s of buffers
                     GetComponent<NetworkObject>().Despawn();
                     break;
                 case LottaOutcome.Opts.RandEnemy:
-                    yield return StartClientRpc(selOpt);
-                    //@TODO: Spawn emeny code here
+                    yield return ProcessState(selOpt);
+                    LottaOutcome.spawnRandEnemy(owner, !owner.isInsideFactory);
+                    yield return new WaitForSeconds(1);
                     GetComponent<NetworkObject>().Despawn();
                     break;
                 case LottaOutcome.Opts.RandTrap:
-                    yield return StartClientRpc(selOpt);
-                    //@TODO: Spawn trap code here
+                    yield return ProcessState(selOpt);
+                    LottaOutcome.spawnRandTrap(owner);
+                    yield return new WaitForSeconds(1);
                     GetComponent<NetworkObject>().Despawn();
                     break;
                 default:
-                    yield return StartClientRpc(selOpt);
+                    yield return ProcessState(selOpt);
                     break;
             }
         }
 
-        IEnumerator StartClientRpc(LottaOutcome.Opts opt)
+        IEnumerator ProcessState(LottaOutcome.Opts opt)
         {
             if (!NetworkManager.Singleton.IsServer) yield break;
-            ExecuteStageClientRpc(opt);
-            yield return new WaitForSeconds(countdownSec + 2);
+            // yield return new WaitForSeconds(countdownSec+1);
             switch (opt)
             {
                 case LottaOutcome.Opts.x1Multi:
@@ -129,34 +222,7 @@ namespace LethalBoomba.Behaviors
                     scrapVal.Value = 0;
                     break;
             }
-        }
-
-        [Rpc(SendTo.ClientsAndHost)]
-        private void ExecuteStageClientRpc(LottaOutcome.Opts opt)
-        {
-            StartCoroutine(HandleTicketActivation(opt));
-        }
-        private IEnumerator HandleTicketActivation(LottaOutcome.Opts SelOpt)
-        {
-
-            //@ TODO: IMPLEMENT Activation Process (Consider HUDManager change + Walkie Talkie sound replication)
-            //
-            //if (!NetworkManager.Singleton.IsClient)
-            //    yield break;
-
-            //// Pre-Explosion sound
-            //BombSrc.PlayOneShot(preExplodeSound);
-            //yield return new WaitForSeconds(countdownSec);
-
-            //GameObject Explosion = UnityEngine.Object.Instantiate(StartOfRound.Instance.explosionPrefab, GetComponent<Transform>().position, Quaternion.Euler(-90f, 0f, 0f), RoundManager.Instance.mapPropsContainer.transform);
-            //GameObject LargeExplosion = Instantiate(ItemManager.LargeExplosion, GetComponent<Transform>().position, Quaternion.Euler(-90f, 0f, 0f), RoundManager.Instance.mapPropsContainer.transform);
-            //LargeExplosion.SetActive(value: true);
-            //HUDManager.Instance.ShakeCamera(ScreenShakeType.VeryStrong);
-            //yield return new WaitForSeconds(beforeKillcdSec);
-
-            //// Kill all the players and wrap-up things
-            //GameNetworkManager.Instance.localPlayerController.KillPlayer(Vector3.zero, causeOfDeath: CauseOfDeath.Blast);
-            //Utils.HideNetObject(gameObject);
+            Result.Value = opt;
         }
 
         public override void SetControlTipsForItem()
@@ -169,8 +235,9 @@ namespace LethalBoomba.Behaviors
     public class LottaOutcome
     {
         // Global
-        public enum Opts
+        public enum Opts : byte
         {
+            Unselected,
             ZeroValue,
             Explosion,
             RandEnemy,
@@ -180,21 +247,22 @@ namespace LethalBoomba.Behaviors
             x2Multi,
             x5Multi,
             x10Multi,
-            InvalidState, // Only happens if the item is spawned in orbit with a mod and user tries to activate it in bad state
+            NoState, // Mark item as activated without any activation process (Includes invalid activation states)
         }
-        public readonly static HashSet<LottaOutcome> StatTable = new HashSet<LottaOutcome>()
+        public readonly static IReadOnlyList<LottaOutcome> StatTable = new List<LottaOutcome>()
         {
             // Final Calculation: Percentage spawn * 100 to allow two decimal place for percentages
-            new LottaOutcome(Opts.ZeroValue, 15),
-            new LottaOutcome(Opts.Explosion, 15),
-            new LottaOutcome(Opts.RandEnemy, 5),
-            new LottaOutcome(Opts.RandTrap, 5),
-            new LottaOutcome(Opts.x1Multi, 25),
-            new LottaOutcome(Opts.x1_5Multi, 20),
-            new LottaOutcome(Opts.x2Multi, 10),
-            new LottaOutcome(Opts.x5Multi, 3.5),
-            new LottaOutcome(Opts.x10Multi, 1.5),
+            new LottaOutcome(Opts.ZeroValue, 15f),
+            new LottaOutcome(Opts.Explosion, 15f),
+            new LottaOutcome(Opts.RandEnemy, 5f),
+            new LottaOutcome(Opts.RandTrap, 5f),
+            new LottaOutcome(Opts.x1Multi, 25f),
+            new LottaOutcome(Opts.x1_5Multi, 20f),
+            new LottaOutcome(Opts.x2Multi, 10f),
+            new LottaOutcome(Opts.x5Multi, 3.5f),
+            new LottaOutcome(Opts.x10Multi, 1.5f),
         };
+        private static readonly int totalVal = StatTable.Sum(k => k.chance);
 
         public static Opts getRandItem()
         {
@@ -210,12 +278,37 @@ namespace LethalBoomba.Behaviors
             throw new Exception("getRandItem: Huh, this is here for control-flow purposes. If you see this, something is terribly wrong...");
         }
 
-        private static int totalVal = 0;
-        private LottaOutcome(Opts opt, double chance)
+        private LottaOutcome(Opts opt, float chance)
         {
             option = opt;
-            this.chance = (int)(chance * 100);
-            totalVal += this.chance;
+            this.chance = Mathf.FloorToInt(chance * 100f);
+        }
+
+        public static void spawnRandEnemy(PlayerControllerB owner, bool outdoorEnemy = true)
+        {
+            EnemyType[] whitelistEnemy = Utils.globalEnemies.Where(k => k.isOutsideEnemy == outdoorEnemy).ToArray();
+            GameObject spawnObj = UnityEngine.Object.Instantiate(
+                whitelistEnemy[RandomNumberGenerator.GetInt32(0, whitelistEnemy.Length)].enemyPrefab,
+                Physics.Raycast(owner.transform.position, Vector3.down, out RaycastHit hit, 10f) ? hit.point : owner.transform.position,
+                Quaternion.identity
+            );
+
+            spawnObj.GetComponent<NetworkObject>().Spawn(true);
+            EnemyAI AIState = spawnObj.GetComponent<EnemyAI>();
+            RoundManager.Instance.SpawnedEnemies.Add(AIState);
+            AIState.enemyType.numberSpawned++;
+            AIState.enemyType.hasSpawnedAtLeastOne = true;
+
+        }
+
+        public static void spawnRandTrap(PlayerControllerB owner)
+        {
+            GameObject spawnObj = UnityEngine.Object.Instantiate(
+                Utils.globalTraps[RandomNumberGenerator.GetInt32(0, Utils.globalTraps.Count)].prefabToSpawn,
+                Physics.Raycast(owner.transform.position, Vector3.down, out RaycastHit hit, 10f) ? hit.point : owner.transform.position,
+                Quaternion.identity
+            );
+            spawnObj.GetComponent<NetworkObject>().Spawn(true);
         }
 
         // Stat Trackings
@@ -230,7 +323,11 @@ namespace LethalBoomba.Behaviors
             // LotTaBehavior[] tickets = UnityEngine.Object.FindObjectsByType<LotTaBehavior>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
             foreach (LotTaBehavior ticket in LotTaBehavior.UnscratchedTickets)
                 if (ticket.IsSpawned && !ticket.isScratched)
+                {
                     ticket.scrapVal.Value = ticket.scrapValue;
+                    ticket.Result.Value = Opts.NoState;
+                }
+                    
         }
     }
 }
