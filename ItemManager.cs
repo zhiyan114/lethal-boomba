@@ -119,7 +119,7 @@ namespace LethalBoomba
         }
 
         private static bool ItemConfigured = false;
-        [HarmonyPatch(typeof(StartOfRound), "Start")]
+        [HarmonyPatch(typeof(StartOfRound), "Awake")]
         [HarmonyPostfix]
         private static void SetupItemSpawn(StartOfRound __instance)
         {
