@@ -4,7 +4,7 @@
 - Rebalanced B00mBa Scrap value ($80 to $120 -> $60 to $80)
 - More internal refactoring
 - Replaced AI Sound clip with other sound source to keep the mod 100% AI-free
-- Fixed critical bug where loading existing save file may cause the mod item to be missing (Discovered during internal testing)
+- Fixed critical bug where loading existing save file on first game launch will cause the mod item to be missing (Discovered during internal testing)
 
 # 1.0.2
 - Removed B00mBa countdown voice (Dropping overall activation countdown time from 8.5s to 3.5s)

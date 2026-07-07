@@ -152,7 +152,7 @@ namespace LethalBoomba.Behaviors
                 UnityEngine.Object.Instantiate(
                     Utils.confettiPrefab,
                     transform.position,
-                    Quaternion.identity,
+                    UnityEngine.Quaternion.identity,
                     (!isInElevator) ? RoundManager.Instance.mapPropsContainer.transform : StartOfRound.Instance.elevatorTransform);
                 AudioSrc.PlayOneShot(WinnerSFX);
                 WalkieTalkie.TransmitOneShotAudio(AudioSrc, WinnerSFX);
@@ -193,13 +193,13 @@ namespace LethalBoomba.Behaviors
                     break;
                 case LottaOutcome.Opts.RandEnemy:
                     yield return ProcessState(selOpt);
-                    LottaOutcome.spawnRandEnemy(owner, !owner.isInsideFactory);
+                    LottaOutcome.spawnRandEnemy(owner, transform.position, !owner.isInsideFactory);
                     yield return new WaitForSeconds(1);
                     GetComponent<NetworkObject>().Despawn();
                     break;
                 case LottaOutcome.Opts.RandTrap:
                     yield return ProcessState(selOpt);
-                    LottaOutcome.spawnRandTrap(owner);
+                    LottaOutcome.spawnRandTrap(owner, transform.position);
                     yield return new WaitForSeconds(1);
                     GetComponent<NetworkObject>().Despawn();
                     break;
@@ -298,12 +298,13 @@ namespace LethalBoomba.Behaviors
             this.chance = Mathf.FloorToInt(chance * 100f);
         }
 
-        public static void spawnRandEnemy(PlayerControllerB owner, bool outdoorEnemy = true)
+        public static void spawnRandEnemy(PlayerControllerB owner, Vector3 objectPOS, bool outdoorEnemy = true)
         {
             EnemyType[] whitelistEnemy = Utils.globalEnemies.Where(k => k.isOutsideEnemy == outdoorEnemy).ToArray();
+            Vector3 spawnLoc = Physics.Raycast(objectPOS, Vector3.down, out RaycastHit hit, 10f) ? hit.point : objectPOS;
             GameObject spawnObj = UnityEngine.Object.Instantiate(
                 whitelistEnemy[RandomNumberGenerator.GetInt32(0, whitelistEnemy.Length)].enemyPrefab,
-                Physics.Raycast(owner.transform.position, Vector3.down, out RaycastHit hit, 10f) ? hit.point : owner.transform.position,
+                spawnLoc,
                 Quaternion.identity
             );
 
@@ -315,12 +316,14 @@ namespace LethalBoomba.Behaviors
 
         }
 
-        public static void spawnRandTrap(PlayerControllerB owner)
+        public static void spawnRandTrap(PlayerControllerB owner, Vector3 objectPOS)
         {
+            Vector3 spawnLoc = Physics.Raycast(objectPOS, Vector3.down, out RaycastHit hit, 10f) ? hit.point : objectPOS;
             GameObject spawnObj = UnityEngine.Object.Instantiate(
                 Utils.globalTraps[RandomNumberGenerator.GetInt32(0, Utils.globalTraps.Count)].prefabToSpawn,
-                Physics.Raycast(owner.transform.position, Vector3.down, out RaycastHit hit, 10f) ? hit.point : owner.transform.position,
-                Quaternion.identity
+                spawnLoc,
+                Quaternion.LookRotation((owner.transform.position - spawnLoc).normalized),
+                RoundManager.Instance.mapPropsContainer.transform
             );
             spawnObj.GetComponent<NetworkObject>().Spawn(true);
         }
