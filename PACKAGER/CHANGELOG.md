@@ -1,8 +1,9 @@
 # 1.1.0
 - Added new item "LotTa" (explosive lottery ticket). Inspired by [LuckyLotteryTicket](https://thunderstore.io/c/lethal-company/p/BLUJAY_LETHAL_MODS/LuckyLotteryTicket/)
 - B00mBa activation sound now plays through walkies and grabbable by enemy
+- Rebalanced B00mBa Scrap value ($80 to $120 -> $60 to $80)
 - More internal refactoring
-- Replaced AI Sound clip with other sound source (compliant mostly since I dont want to add AI tag just because I have total of less than 13 seconds of AI audio)
+- Replaced AI Sound clip with other sound source to keep the mod 100% AI-free
 
 # 1.0.2
 - Removed B00mBa countdown voice (Dropping overall activation countdown time from 8.5s to 3.5s)

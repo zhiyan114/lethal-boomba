@@ -7,7 +7,7 @@ A mod adds two explosive scrap to all the lethal company moons
 Your generic pocketable bomb item that can kill any player/enemies within 5 radius after activation (I mean any enemies...) OR sell it to the company for money :3
 
 Scrap Info:
-- Item is typically worth: $80 to $120 
+- Item is typically worth: $60 to $80 
 - Weights about 21 lb
 - Has slightly below common spawn rate
 - Can be thrown around (After activation)
@@ -22,7 +22,7 @@ Scrap Info:
 - Half the spawn rate of B00mBa (I've only observe up to 1 Nuka per moon, though, luck could spawn more)
 
 # LotTa
-Stay safe and sell the ticket as is OR gamble for a chance to receive either a higher ticket value, lose it all, or a surprise entity/trap spawn! Because of the spawning mechanics, lotTa will no longer be scratchable when you leave the moon that it was found on.
+Stay safe and sell the ticket as is OR gamble for a chance to receive either a higher ticket value, lose it all, or a surprise entity/trap spawn! Because of the spawning/explosion mechanics, lotTa will no longer be scratchable when you leave the moon that it was found on (mechanics balancing).
 
 Scrap Info:
 - Item (pre-scratch) is typically worth: $10 to $100
@@ -47,4 +47,3 @@ Activation Probabilities:
 
 ## License
 - "Nuclear Bomb" (https://skfb.ly/6wy6M) by FWTeastwood is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
-- Some audio files, particularly voice-over, are generated with Typecast (https://typecast.ai)

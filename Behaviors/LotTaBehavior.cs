@@ -39,7 +39,7 @@ namespace LethalBoomba.Behaviors
 
         private void serverResUpdate(LottaOutcome.Opts old, LottaOutcome.Opts val)
         {
-            if(old == Opts.Unselected && val != Opts.Unselected)
+            if (old == Opts.Unselected && val != Opts.Unselected)
                 UnscratchedTickets.Remove(this);
         }
 
@@ -257,7 +257,7 @@ namespace LethalBoomba.Behaviors
             Explosion,
             RandEnemy,
             RandTrap,
-            // Multiplier with value > 0 must and only go below here (except NoState)
+            // Multiplier with value > 0 must and only go below here (NoState is an exception)
             x1Multi,
             x1_5Multi,
             x2Multi,
@@ -343,7 +343,8 @@ namespace LethalBoomba.Behaviors
                     ticket.scrapVal.Value = ticket.scrapValue;
                     ticket.Result.Value = Opts.NoState;
                 }
-            LotTaBehavior.UnscratchedTickets.Clear();
+            if (LotTaBehavior.UnscratchedTickets.Count > 0)
+                Init.logger.LogError($"UnscratchedTickets expected zero item, but got {LotTaBehavior.UnscratchedTickets.Count}");
         }
     }
 }
