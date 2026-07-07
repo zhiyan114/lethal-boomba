@@ -1,5 +1,5 @@
 # LethalBoomba
-A mod adds two explosive scrap to all the lethal company moons
+A mod adds two explosive scrap to all the lethal company moons. Remember, if there's any issue with the mod, please report it [here](https://github.com/zhiyan114/lethal-boomba/issues)
 
 # Type of Explosives
 
