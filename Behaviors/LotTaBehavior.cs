@@ -92,8 +92,6 @@ namespace LethalBoomba.Behaviors
                             playerHeldBy.DiscardHeldObject();
 
                     }
-
-                    yield return new WaitForSeconds(1);
                     Utils.Explode(transform.position, 10);
                     Utils.HideNetObject(gameObject);
                     yield break;
@@ -190,7 +188,7 @@ namespace LethalBoomba.Behaviors
             {
                 case LottaOutcome.Opts.Explosion:
                     yield return ProcessState(selOpt);
-                    yield return new WaitForSeconds(2); // 1s before explosion + 1s of buffers
+                    yield return new WaitForSeconds(1); // 1s of buffers
                     GetComponent<NetworkObject>().Despawn();
                     break;
                 case LottaOutcome.Opts.RandEnemy:
