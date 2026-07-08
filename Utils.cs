@@ -82,11 +82,8 @@ namespace LethalBoomba
         {
             MethodInfo[] methods = type.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
             foreach (MethodInfo method in methods)
-            {
-                object[] attributes = method.GetCustomAttributes(typeof(RuntimeInitializeOnLoadMethodAttribute), false);
-                if (attributes.Length == 0) continue;
-                method.Invoke(null, null);
-            }
+                if(method.GetCustomAttribute<RuntimeInitializeOnLoadMethodAttribute>(false) != null)
+                    method.Invoke(null, null);
         }
     }
 
