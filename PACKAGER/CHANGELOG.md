@@ -1,5 +1,5 @@
 # 1.1.1
-- Added host configurable probability table for lotTa item (allow user to balance the mechanic themselves)
+- Addec config file for host to adjust lotta scratch weights if the default value doesn't feel balance
 
 # 1.1.0
 - Added new item "LotTa" (explosive lottery ticket). Inspired by [LuckyLotteryTicket](https://thunderstore.io/c/lethal-company/p/BLUJAY_LETHAL_MODS/LuckyLotteryTicket/)

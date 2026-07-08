@@ -43,7 +43,7 @@ Activation Probabilities (default):
     - 3.5% - 5x multiplier ($50 to $500)
     - 1.5% - 10x multiplier ($100 to $1000)
 
-If the default value doesn't feel balanced, host can change the configuration for it (This config ONLY applies to host, not player).
+If the default value doesn't feel balanced, host can change the probabilities in the configuration file.
 
 ## License
 - "Nuclear Bomb" (https://skfb.ly/6wy6M) by FWTeastwood is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
