@@ -1,3 +1,6 @@
+# 1.1.1
+- Added host configurable probability table for lotTa item (allow user to balance the mechanic themselves)
+
 # 1.1.0
 - Added new item "LotTa" (explosive lottery ticket). Inspired by [LuckyLotteryTicket](https://thunderstore.io/c/lethal-company/p/BLUJAY_LETHAL_MODS/LuckyLotteryTicket/)
 - B00mBa activation sound now plays through walkies and grabbable by enemy

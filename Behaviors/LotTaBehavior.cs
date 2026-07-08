@@ -263,20 +263,8 @@ namespace LethalBoomba.Behaviors
             x10Multi,
             NoState, // Mark item as activated without any activation process (Includes invalid activation states)
         }
-        public readonly static IReadOnlyList<LottaOutcome> StatTable = new List<LottaOutcome>()
-        {
-            // Final Calculation: Percentage spawn * 100 to allow two decimal place for percentages
-            new LottaOutcome(Opts.ZeroValue, 15f),
-            new LottaOutcome(Opts.Explosion, 15f),
-            new LottaOutcome(Opts.RandEnemy, 5f),
-            new LottaOutcome(Opts.RandTrap, 5f),
-            new LottaOutcome(Opts.x1Multi, 25f),
-            new LottaOutcome(Opts.x1_5Multi, 20f),
-            new LottaOutcome(Opts.x2Multi, 10f),
-            new LottaOutcome(Opts.x5Multi, 3.5f),
-            new LottaOutcome(Opts.x10Multi, 1.5f),
-        };
-        private static readonly int totalVal = StatTable.Sum(k => k.chance);
+        public static IReadOnlyList<LottaOutcome> StatTable { get; private set; }
+        private static int totalVal = 0;
 
         public static Opts getRandItem()
         {
@@ -290,6 +278,26 @@ namespace LethalBoomba.Behaviors
             }
 
             throw new Exception("getRandItem: Huh, this is here for control-flow purposes. If you see this, something is terribly wrong...");
+        }
+
+        [RuntimeInitializeOnLoadMethod]
+        static void SetupOutcomeTable()
+        {
+            StatTable = new List<LottaOutcome>()
+            {
+            // Final Calculation: Percentage spawn * 100 to allow two decimal place for percentages
+                new LottaOutcome(Opts.ZeroValue, ConfigManager.Lotta_ZeroValueChance.Value),
+                new LottaOutcome(Opts.Explosion, ConfigManager.Lotta_ExplosionChance.Value),
+                new LottaOutcome(Opts.RandEnemy, ConfigManager.Lotta_RandEnemyChance.Value),
+                new LottaOutcome(Opts.RandTrap, ConfigManager.Lotta_RandTrapChance.Value),
+                new LottaOutcome(Opts.x1Multi, ConfigManager.Lotta_x1MultiChance.Value),
+                new LottaOutcome(Opts.x1_5Multi, ConfigManager.Lotta_x1_5MultiChance.Value),
+                new LottaOutcome(Opts.x2Multi, ConfigManager.Lotta_x2MultiChance.Value),
+                new LottaOutcome(Opts.x5Multi, ConfigManager.Lotta_x5MultiChance.Value),
+                new LottaOutcome(Opts.x10Multi, ConfigManager.Lotta_x10MultiChance.Value),
+            };
+
+            totalVal = StatTable.Sum(k => k.chance);
         }
 
         private LottaOutcome(Opts opt, float chance)

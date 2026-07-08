@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
 using LethalBoomba.Behaviors;
@@ -15,15 +16,23 @@ namespace LethalBoomba
     {
         public const string Guid = "FurryNet.BoomBa";
         public const string Name = "BoomBa";
-        public const string Version = "1.1.0";
+        public const string Version = "1.1.1";
 
         public static readonly ManualLogSource logger = BepInEx.Logging.Logger.CreateLogSource(Guid);
         private static readonly Harmony harmony = new Harmony(Guid);
+        public static ConfigFile config { get; private set; }
 
         private void Awake()
         {
-            // Setup Items
+            // Must Run First stuff here
+            Init.config = this.Config;
             Utils.ExecuteRuntimeInitAttr(typeof(ItemManager));
+            Utils.ExecuteRuntimeInitAttr(typeof(ConfigManager));
+
+            // Stuff here that should be executed early, but breaks if way too early
+            Utils.ExecuteRuntimeInitAttr(typeof(LottaOutcome));
+            
+            // Setup Items
             ItemManager.AddItem<BoomBaBehavior>("Assets/AssetBundles/BombToolkit/BoomBa/B00mbaProp.asset", 60);
             ItemManager.AddItem<NuKaBehavior>("Assets/AssetBundles/BombToolkit/NukeKa/NuKaProp.asset", 30);
             ItemManager.AddItem<LotTaBehavior>("Assets/AssetBundles/BombToolkit/LotTa/LottaProp.asset", 50);

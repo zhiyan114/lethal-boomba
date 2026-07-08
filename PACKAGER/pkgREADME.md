@@ -29,7 +29,7 @@ Scrap Info:
 - Weights about 3 lb
 - Spawn rate is only slightly below B00mBa
 
-Activation Probabilities:
+Activation Probabilities (default):
 - 30% Loss Value
     - 15% - Ticket lose all its value
     - 15% - Explosion (radius of 10)
@@ -43,7 +43,7 @@ Activation Probabilities:
     - 3.5% - 5x multiplier ($50 to $500)
     - 1.5% - 10x multiplier ($100 to $1000)
 
-(Test in prod YAY!! if this doesnt feel balanced, plz open a github issue to provide suggestion)
+If the default value doesn't feel balanced, host can change the configuration for it (This config ONLY applies to host, not player).
 
 ## License
 - "Nuclear Bomb" (https://skfb.ly/6wy6M) by FWTeastwood is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).

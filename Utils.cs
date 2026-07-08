@@ -80,10 +80,10 @@ namespace LethalBoomba
         }
         public static void ExecuteRuntimeInitAttr(Type type)
         {
-            var methods = type.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
-            foreach (var method in methods)
+            MethodInfo[] methods = type.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+            foreach (MethodInfo method in methods)
             {
-                var attributes = method.GetCustomAttributes(typeof(RuntimeInitializeOnLoadMethodAttribute), false);
+                object[] attributes = method.GetCustomAttributes(typeof(RuntimeInitializeOnLoadMethodAttribute), false);
                 if (attributes.Length == 0) continue;
                 method.Invoke(null, null);
             }
