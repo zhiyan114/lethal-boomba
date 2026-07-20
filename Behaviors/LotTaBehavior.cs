@@ -7,7 +7,6 @@ using System.Linq;
 using System.Security.Cryptography;
 using Unity.Netcode;
 using UnityEngine;
-using static LethalBoomba.Behaviors.LottaOutcome;
 
 namespace LethalBoomba.Behaviors
 {
@@ -20,7 +19,7 @@ namespace LethalBoomba.Behaviors
         public float countdownSec;
 
         public NetworkVariable<int> scrapVal = new NetworkVariable<int>(-1);
-        public NetworkVariable<LottaOutcome.Opts> Result = new NetworkVariable<Opts>(LottaOutcome.Opts.Unselected);
+        public NetworkVariable<LottaOutcome.Opts> Result = new NetworkVariable<LottaOutcome.Opts>(LottaOutcome.Opts.Unselected);
         public bool isScratched { get => Result.Value != LottaOutcome.Opts.Unselected; }
 
         private void Awake()
@@ -39,7 +38,7 @@ namespace LethalBoomba.Behaviors
 
         private void serverResUpdate(LottaOutcome.Opts old, LottaOutcome.Opts val)
         {
-            if (old == Opts.Unselected && val != Opts.Unselected)
+            if (old == LottaOutcome.Opts.Unselected && val != LottaOutcome.Opts.Unselected)
                 UnscratchedTickets.Remove(this);
         }
 
@@ -79,7 +78,7 @@ namespace LethalBoomba.Behaviors
 
             switch (Result.Value)
             {
-                case Opts.NoState:
+                case LottaOutcome.Opts.NoState:
                     HUDManager.Instance.DisplayTip("LotTa Outcome", "Invalid State Detected (The item was spawned by a mod while in an invalid state :p)");
                     playerHeldBy.activatingItem = false;
                     yield break;
@@ -147,7 +146,7 @@ namespace LethalBoomba.Behaviors
             // Handle post-multiplier selection
             if (this.IsOwner)
                 playerHeldBy.activatingItem = false;
-            if(Utils.confettiPrefab && (byte)Result.Value > (byte)Opts.x1Multi)
+            if(Utils.confettiPrefab && (byte)Result.Value > (byte)LottaOutcome.Opts.x1Multi)
             {
                 UnityEngine.Object.Instantiate(
                     Utils.confettiPrefab,
@@ -170,7 +169,7 @@ namespace LethalBoomba.Behaviors
             if (!StartOfRound.Instance.shipHasLanded)
             {
                 scrapVal.Value = scrapValue;
-                Result.Value = Opts.NoState;
+                Result.Value = LottaOutcome.Opts.NoState;
                 return;
             }
             ulong senderClientId = rpcParam.Receive.SenderClientId;

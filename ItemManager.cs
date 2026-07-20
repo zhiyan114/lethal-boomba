@@ -118,18 +118,17 @@ namespace LethalBoomba
             Init.logger.LogInfo("ItemManager: Configured Network Prefabs");
         }
 
-        private static bool ItemConfigured = false;
         [HarmonyPatch(typeof(StartOfRound), "Awake")]
         [HarmonyPostfix]
         private static void SetupItemSpawn(StartOfRound __instance)
         {
-            if (ItemConfigured) return;
-            ItemConfigured = true;
             foreach(ItemManager itemMGR in _items.Values)
             {
-                __instance.allItemsList.itemsList.Add(itemMGR.item);
+                if(!__instance.allItemsList.itemsList.Contains(itemMGR.item))
+                    __instance.allItemsList.itemsList.Add(itemMGR.item);
                 foreach (SelectableLevel level in __instance.levels)
-                    level.spawnableScrap.Add(new SpawnableItemWithRarity(itemMGR.item, itemMGR.SpawnRate));
+                    if(!level.spawnableScrap.Any(k=>k.spawnableItem == itemMGR.item))
+                        level.spawnableScrap.Add(new SpawnableItemWithRarity(itemMGR.item, itemMGR.SpawnRate));
             }
             Init.logger.LogInfo("ItemManager: Successfully Loaded all items to all maps");
 
@@ -138,21 +137,21 @@ namespace LethalBoomba
             //GameObject obj = UnityEngine.Object.Instantiate(Init.mainAsset.spawnPrefab, UnityEngine.Vector3.zero, UnityEngine.Quaternion.identity);
             //Init.logger.LogMessage("Object Init...");
 
-            //if(!obj.TryGetComponent<NetworkObject>(out NetworkObject netObj))
-            //{
-            //    Init.logger.LogError("Failed: NetworkObject missing from spawnPrefab...");
-            //    return;
-            //}
-            //Init.logger.LogMessage("Obtained NetworkObject...");
+                //if(!obj.TryGetComponent<NetworkObject>(out NetworkObject netObj))
+                //{
+                //    Init.logger.LogError("Failed: NetworkObject missing from spawnPrefab...");
+                //    return;
+                //}
+                //Init.logger.LogMessage("Obtained NetworkObject...");
 
-            //if (!obj.TryGetComponent<GrabbableObject>(out GrabbableObject _))
-            //{
-            //    Init.logger.LogError("Failed: BoomBaBehavior Script Class missing from spawnPrefab...");
-            //    return;
-            //}
+                //if (!obj.TryGetComponent<GrabbableObject>(out GrabbableObject _))
+                //{
+                //    Init.logger.LogError("Failed: BoomBaBehavior Script Class missing from spawnPrefab...");
+                //    return;
+                //}
 
-            //netObj.Spawn();
-            //Init.logger.LogMessage("Passed: Object Spawned, if no exception occurs, test is completed!");
+                //netObj.Spawn();
+                //Init.logger.LogMessage("Passed: Object Spawned, if no exception occurs, test is completed!");
         }
     }
 }
