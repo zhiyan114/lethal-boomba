@@ -1,3 +1,6 @@
+# NEXT_REL_VER
+- Another internal refactoring (sorry new to modding so I'm just simplifying more stuff as I learn them)
+
 # 1.1.1
 - Added config file for host to adjust lotta scratch weights if the default value doesn't feel balance
 
