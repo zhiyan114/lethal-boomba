@@ -8,21 +8,19 @@ namespace LethalBoomba.Behaviors
 {
     public class NuKaBehavior : GrabbableObject
     {
-        public AudioClip preExplodeSound;
-        public float countdownSec;
-        public float beforeKillcdSec;
+        [SerializeField]
+        private AudioClip preExplodeSound;
+        [SerializeField]
+        private float countdownSec;
+        [SerializeField]
+        private float beforeKillcdSec;
+
         private AudioSource BombSrc;
         NetworkVariable<bool> isDetonated = new NetworkVariable<bool>(false);
 
         private void Awake()
         {
             BombSrc = GetComponents<AudioSource>()[1];
-            grabbable = true;
-            isInFactory = true;
-            itemProperties = ItemManager.GetItem("NuKa");
-            countdownSec = 7.5f;
-            beforeKillcdSec = 1f; // 2.5
-            preExplodeSound = ItemManager.bundle.LoadAsset<AudioClip>("Assets/AssetBundles/BombToolkit/NukeKa/Sounds/NuKaBoom.ogg");
         }
 
         public override void ItemActivate(bool used, bool buttonDown = true)
@@ -47,7 +45,7 @@ namespace LethalBoomba.Behaviors
 
         private IEnumerator ManagedExecution()
         {
-            if(!NetworkManager.Singleton.IsServer)
+            if (!NetworkManager.Singleton.IsServer)
                 yield break;
             ExecuteStageClientRpc();
 

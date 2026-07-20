@@ -12,26 +12,25 @@ namespace LethalBoomba.Behaviors
 {
     public class LotTaBehavior : GrabbableObject
     {
-        public static List<LotTaBehavior> UnscratchedTickets = new List<LotTaBehavior>();
         private AudioSource AudioSrc;
-        public AudioClip ScratchSound;
-        public AudioClip WinnerSFX;
-        public float countdownSec;
+        [SerializeField]
+        private AudioClip ScratchSound;
+        [SerializeField]
+        private AudioClip WinnerSFX;
+        [SerializeField]
+        private float countdownSec;
 
+        [HideInInspector]
+        public static List<LotTaBehavior> UnscratchedTickets = new List<LotTaBehavior>();
+        [HideInInspector]
         public NetworkVariable<int> scrapVal = new NetworkVariable<int>(-1);
+        [HideInInspector]
         public NetworkVariable<LottaOutcome.Opts> Result = new NetworkVariable<LottaOutcome.Opts>(LottaOutcome.Opts.Unselected);
         public bool isScratched { get => Result.Value != LottaOutcome.Opts.Unselected; }
 
         private void Awake()
         {
             AudioSrc = GetComponent<AudioSource>();
-            grabbable = true;
-            isInFactory = true;
-            grabbableToEnemies = true;
-            itemProperties = ItemManager.GetItem("LotTa");
-            countdownSec = 1f;
-            ScratchSound = ItemManager.bundle.LoadAsset<AudioClip>("Assets/AssetBundles/BombToolkit/LotTa/sounds/LottaActivate.ogg");
-            WinnerSFX = ItemManager.bundle.LoadAsset<AudioClip>("Assets/AssetBundles/BombToolkit/LotTa/sounds/LottaWon.ogg");
             scrapVal.OnValueChanged += (_, val) => SetScrapValue(val);
             Result.OnValueChanged += serverResUpdate;
         }
@@ -73,7 +72,7 @@ namespace LethalBoomba.Behaviors
             AudioSrc.PlayOneShot(ScratchSound);
             WalkieTalkie.TransmitOneShotAudio(AudioSrc, ScratchSound);
             yield return new WaitForSeconds(1);
-            if(base.IsOwner) StartScratchServerRpc();
+            if (base.IsOwner) StartScratchServerRpc();
             yield return new WaitUntil(() => isScratched);
 
             switch (Result.Value)
@@ -146,7 +145,7 @@ namespace LethalBoomba.Behaviors
             // Handle post-multiplier selection
             if (this.IsOwner)
                 playerHeldBy.activatingItem = false;
-            if(Utils.confettiPrefab && (byte)Result.Value > (byte)LottaOutcome.Opts.x1Multi)
+            if (Utils.confettiPrefab && (byte)Result.Value > (byte)LottaOutcome.Opts.x1Multi)
             {
                 UnityEngine.Object.Instantiate(
                     Utils.confettiPrefab,
@@ -156,7 +155,7 @@ namespace LethalBoomba.Behaviors
                 AudioSrc.PlayOneShot(WinnerSFX);
                 WalkieTalkie.TransmitOneShotAudio(AudioSrc, WinnerSFX);
             }
-                
+
         }
 
         [Rpc(SendTo.Server)]

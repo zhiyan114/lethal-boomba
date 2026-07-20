@@ -69,7 +69,8 @@ namespace LethalBoomba
                 SpawnRate = spawnRate
             });
 
-            mainItem.spawnPrefab.AddComponent<T>();
+            if(!mainItem.spawnPrefab.TryGetComponent<T>(out _))
+                mainItem.spawnPrefab.AddComponent<T>();
             Utils.ExecuteRuntimeInitAttr(typeof(T));
             Init.logger.LogInfo($"ItemManager: Added item {mainItem.itemName} with custom behavior!");
         }

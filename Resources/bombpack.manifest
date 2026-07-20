@@ -1,15 +1,15 @@
 ManifestFileVersion: 0
-CRC: 1879424433
+CRC: 4051066337
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 9712b0f0152c1c4081dbf5f5deba68cd
+    Hash: b25b1c5697e0c15fc0b93d22142b76af
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 07fcbe3a47f1b85d5daf2a3bfedf15b5
+    Hash: 97355b00c607da3ba04ce9f9ba79ef35
   IncrementalBuildHash:
     serializedVersion: 2
-    Hash: 9712b0f0152c1c4081dbf5f5deba68cd
+    Hash: b25b1c5697e0c15fc0b93d22142b76af
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -35,6 +35,12 @@ ClassTypes:
 - Class: 83
   Script: {instanceID: 0}
 - Class: 114
+  Script: {fileID: -924900366, guid: d621838076c49ea4e8b13901c9f9d41e, type: 3}
+- Class: 114
+  Script: {fileID: -1314696547, guid: d621838076c49ea4e8b13901c9f9d41e, type: 3}
+- Class: 114
+  Script: {fileID: 1313175251, guid: d621838076c49ea4e8b13901c9f9d41e, type: 3}
+- Class: 114
   Script: {fileID: 11500000, guid: c30496d6ae6d6f907456e10a94e01ec6, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 3c36d0a92cbb1f26a39169ef0eae393a, type: 3}
@@ -54,14 +60,16 @@ ClassTypes:
   Script: {instanceID: 0}
 - Class: 245
   Script: {instanceID: 0}
-SerializeReferenceClassIdentifiers: []
+SerializeReferenceClassIdentifiers:
+- AssemblyName: Assembly-CSharp
+  ClassName: Battery
+- AssemblyName: Unity.Netcode.Runtime
+  ClassName: Unity.Netcode.NetworkVariable`1[LethalBoomba.Behaviors.LottaOutcome/Opts]
+- AssemblyName: Unity.Netcode.Runtime
+  ClassName: Unity.Netcode.NetworkVariable`1[System.Int32]
 Assets:
 - Assets/AssetBundles/BombToolkit/BoomBa/B00mbaProp.asset
 - Assets/AssetBundles/BombToolkit/LotTa/LottaProp.asset
 - Assets/AssetBundles/BombToolkit/NukeKa/Effect/NuKaBoomEffect.prefab
 - Assets/AssetBundles/BombToolkit/NukeKa/NuKaProp.asset
-- Assets/AssetBundles/BombToolkit/NukeKa/Sounds/NukaBoom.ogg
-- Assets/AssetBundles/BombToolkit/BoomBa/Sounds/B00mbaBoom.ogg
-- Assets/AssetBundles/BombToolkit/LotTa/sounds/LottaWon.ogg
-- Assets/AssetBundles/BombToolkit/LotTa/sounds/LottaActivate.ogg
 Dependencies: []

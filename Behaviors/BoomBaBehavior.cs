@@ -9,37 +9,26 @@ namespace LethalBoomba.Behaviors
 {
     public class BoomBaBehavior : GrabbableObject
     {
-        public AudioClip preExplodeSound;
-        public float countdownSec;
-        private AudioSource BombSrc;
-        private float blastRadius = 5f;
-        NetworkVariable<bool> isDetonated = new NetworkVariable<bool>(false);
+        [SerializeField]
+        private AudioClip preExplodeSound;
+        [SerializeField]
+        private float countdownSec;
+        [SerializeField]
+        private float blastRadius;
+        [SerializeField]
+        private AnimationCurve grenadeFallCurve;
+        [SerializeField]
+        private AnimationCurve grenadeVerticalFallCurve;
+        [SerializeField]
+        private AnimationCurve grenadeVerticalFallCurveNoBounce;
 
-        public AnimationCurve grenadeFallCurve;
-        public AnimationCurve grenadeVerticalFallCurve;
-        public AnimationCurve grenadeVerticalFallCurveNoBounce;
+        private AudioSource BombSrc;
         private int grenadeThrowMask = 268437761;
+        NetworkVariable<bool> isDetonated = new NetworkVariable<bool>(false);
 
         private void Awake()
         {
             BombSrc = GetComponent<AudioSource>();
-            grabbable = true;
-            isInFactory = true;
-            grabbableToEnemies = true;
-            itemProperties = ItemManager.GetItem("B00mba");
-            countdownSec = 3.5f;
-            preExplodeSound = ItemManager.bundle.LoadAsset<AudioClip>("Assets/AssetBundles/BombToolkit/BoomBa/Sounds/B00mbaBoom.ogg");
-            grenadeFallCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
-            grenadeVerticalFallCurve = new AnimationCurve(
-                new Keyframe(0f,    0f,     0f,  0f),
-                new Keyframe(0.35f, -0.35f, 0f,  0f),
-                new Keyframe(1f,    1f,     0f,  0f)
-            );
-            grenadeVerticalFallCurveNoBounce = new AnimationCurve(
-                new Keyframe(0f,   0f,     0f, 0f),
-                new Keyframe(0.4f, -0.2f,  0f, 0f),
-                new Keyframe(1f,   1f,     0f, 0f)
-            );
         }
 
         public override void ItemActivate(bool used, bool buttonDown = true)
@@ -86,15 +75,15 @@ namespace LethalBoomba.Behaviors
 
         private IEnumerator CountdownRoutine()
         {
-            if(!NetworkManager.Singleton.IsClient)
+            if (!NetworkManager.Singleton.IsClient)
                 yield break;
 
             if (!StartOfRound.Instance.shipHasLanded)
             {
                 // Prevent inventory bug when item is despawn while in pocket
-                if(IsOwner)
+                if (IsOwner)
                     playerHeldBy?.DiscardHeldObject();
-                    
+
                 grabbable = false;
             }
 
