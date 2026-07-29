@@ -240,12 +240,24 @@ namespace LethalBoomba.Behaviors
             bool allowScratch = !isScratched && StartOfRound.Instance?.shipHasLanded == true;
             HUDManager.Instance.ChangeControlTipMultiple(allowScratch ? itemProperties.toolTips : new string[] { }, holdingItem: true, itemProperties);
         }
+
+        public override int GetItemDataToSave()
+        {
+            base.GetItemDataToSave();
+            return (int)Result.Value;
+        }
+
+        public override void LoadItemSaveData(int saveData)
+        {
+            base.LoadItemSaveData(saveData);
+            Result.Value = (LottaOutcome.Opts)saveData;
+        }
     }
 
     public class LottaOutcome
     {
         // Global
-        public enum Opts : byte
+        public enum Opts: byte
         {
             // General Purpose Lotta states
             Unselected,
@@ -253,6 +265,7 @@ namespace LethalBoomba.Behaviors
             Explosion,
             RandEnemy,
             RandTrap,
+
             // Multiplier with value > 0 must and only go below here (NoState is an exception)
             x1Multi,
             x1_5Multi,
