@@ -42,6 +42,7 @@ namespace LethalBoomba
             harmony.PatchAll(typeof(ItemManager));
             harmony.PatchAll(typeof(LottaOutcome));
             harmony.PatchAll(typeof(UtilHelper));
+            harmony.PatchAll(typeof(PlayerPatcher));
             logger.LogInfo("Patch Done...");
 
             // Setup NetVariable
