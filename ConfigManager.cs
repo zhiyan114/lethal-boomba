@@ -27,10 +27,26 @@ namespace LethalBoomba
         public static ConfigEntry<float> Lotta_x5MultiChance;
         [FloatValidation(0)]
         public static ConfigEntry<float> Lotta_x10MultiChance;
+        [FloatValidation(0)]
+        public static ConfigEntry<float> Druga_ExplodeChance;
+        [FloatValidation(0)]
+        public static ConfigEntry<float> Druga_x0_5MultiChance;
+        [FloatValidation(0)]
+        public static ConfigEntry<float> Druga_x0_75MultiChance;
+        [FloatValidation(0)]
+        public static ConfigEntry<float> Druga_x1MultiChance;
+        [FloatValidation(0)]
+        public static ConfigEntry<float> Druga_x1_5MultiChance;
+        [FloatValidation(0)]
+        public static ConfigEntry<float> Druga_x2MultiChance;
+        [FloatValidation(0)]
+        public static ConfigEntry<float> Druga_x3MultiChance;
+
 
         [RuntimeInitializeOnLoadMethod]
         static void LoadConf()
         {
+            // Lotta Item
             Lotta_ZeroValueChance = Init.config.Bind<float>("lotta.host", "ZeroValueChance", 15f, "The weight/chance for a scratched lotta to have zero value");
             Lotta_ExplosionChance = Init.config.Bind<float>("lotta.host", "ExplosionChance", 15f, "The weight/chance for a scratched lotta to explode");
             Lotta_RandEnemyChance = Init.config.Bind<float>("lotta.host", "RandEnemyChance", 5f, "The weight/chance for a scratched lotta to spawn random enemy");
@@ -40,6 +56,16 @@ namespace LethalBoomba
             Lotta_x2MultiChance = Init.config.Bind<float>("lotta.host", "x2MultiChance", 10f, "The weight/chance for a scratched lotta to have x2 multiplier");
             Lotta_x5MultiChance = Init.config.Bind<float>("lotta.host", "x5MultiChance", 3.5f, "The weight/chance for a scratched lotta to have x5 multiplier");
             Lotta_x10MultiChance = Init.config.Bind<float>("lotta.host", "x10MultiChance", 1.5f, "The weight/chance for a scratched lotta to have x10 multiplier");
+
+            // Druga Item
+            Druga_ExplodeChance = Init.config.Bind<float>("druga.host", "ExplodeChance", 30f, "The weight/chance for the in-take drug to explode");
+            Druga_x0_5MultiChance = Init.config.Bind<float>("druga.host", "x0_5MultiChance", 50f, "The weight/chance for the player stat to reduce by half");
+            Druga_x0_75MultiChance = Init.config.Bind<float>("druga.host", "x0_75MultiChance", 25f, "The weight/chance for the player stat to reduce by a quarter");
+            Druga_x1MultiChance = Init.config.Bind<float>("druga.host", "x1MultiChance", 15f, "The weight/chance for the player stat to have zero effects");
+            Druga_x1_5MultiChance = Init.config.Bind<float>("druga.host", "x1_5MultiChance", 5f, "The weight/chance for the player stat increase by half");
+            Druga_x2MultiChance = Init.config.Bind<float>("druga.host", "x2MultiChance", 3.5f, "The weight/chance for the player stat to double");
+            Druga_x3MultiChance = Init.config.Bind<float>("druga.host", "x3MultiChance", 1.5f, "The weight/chance for the player stat to triple");
+
             CheckAllFieldAndSoftErrorOnFail();
         }
 
