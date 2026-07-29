@@ -1,5 +1,10 @@
-# NEXT_REL_VER
+# 1.2.0
 - Another internal refactoring (sorry new to modding so I'm just simplifying more stuff as I learn them)
+- Added new item "DruGa" (explosive drug item)
+- Moved all item info to WIKI instead of README (getting too long)
+- Nuka are now vulnerable to lighning strikes (I mean duh, it is made from metal, so it should've been behaving that way)
+- Fixed issue where LotTa can be scratched again when reloading the save (item state not actually saved)
+- Upgraded Unity version and setup for assetbundles
 
 # 1.1.1
 - Added config file for host to adjust lotta scratch weights if the default value doesn't feel balance

@@ -16,7 +16,7 @@ namespace LethalBoomba
     {
         public const string Guid = "FurryNet.BoomBa";
         public const string Name = "BoomBa";
-        public const string Version = "1.1.1";
+        public const string Version = "1.2.0";
 
         public static readonly ManualLogSource logger = BepInEx.Logging.Logger.CreateLogSource(Guid);
         private static readonly Harmony harmony = new Harmony(Guid);
@@ -36,6 +36,7 @@ namespace LethalBoomba
             ItemManager.AddItem<BoomBaBehavior>("Assets/AssetBundles/BombToolkit/BoomBa/B00mbaProp.asset", 60);
             ItemManager.AddItem<NuKaBehavior>("Assets/AssetBundles/BombToolkit/NukeKa/NuKaProp.asset", 30);
             ItemManager.AddItem<LotTaBehavior>("Assets/AssetBundles/BombToolkit/LotTa/LottaProp.asset", 50);
+            ItemManager.AddItem<DruGaBehavior>("Assets/AssetBundles/BombToolkit/DruGa/DruGaProp.asset", 50);
 
             // Patch Code
             harmony.PatchAll(typeof(ItemManager));

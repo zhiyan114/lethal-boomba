@@ -1,15 +1,15 @@
 ManifestFileVersion: 0
-CRC: 4051066337
+CRC: 2363518228
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: b25b1c5697e0c15fc0b93d22142b76af
+    Hash: 97880ccd8192113e4d49dfa695d4fd1f
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 97355b00c607da3ba04ce9f9ba79ef35
+    Hash: 4f987de30f7c0892b2bbd5529f8820d1
   IncrementalBuildHash:
     serializedVersion: 2
-    Hash: b25b1c5697e0c15fc0b93d22142b76af
+    Hash: 97880ccd8192113e4d49dfa695d4fd1f
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -36,6 +36,8 @@ ClassTypes:
   Script: {instanceID: 0}
 - Class: 114
   Script: {fileID: -924900366, guid: d621838076c49ea4e8b13901c9f9d41e, type: 3}
+- Class: 114
+  Script: {fileID: -1642554436, guid: d621838076c49ea4e8b13901c9f9d41e, type: 3}
 - Class: 114
   Script: {fileID: -1314696547, guid: d621838076c49ea4e8b13901c9f9d41e, type: 3}
 - Class: 114
@@ -70,6 +72,7 @@ SerializeReferenceClassIdentifiers:
 Assets:
 - Assets/AssetBundles/BombToolkit/BoomBa/B00mbaProp.asset
 - Assets/AssetBundles/BombToolkit/LotTa/LottaProp.asset
+- Assets/AssetBundles/BombToolkit/DruGa/DruGaProp.asset
 - Assets/AssetBundles/BombToolkit/NukeKa/Effect/NuKaBoomEffect.prefab
 - Assets/AssetBundles/BombToolkit/NukeKa/NuKaProp.asset
 Dependencies: []
