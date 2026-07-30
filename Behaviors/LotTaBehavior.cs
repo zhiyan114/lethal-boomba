@@ -86,8 +86,7 @@ namespace LethalBoomba.Behaviors
                     {
                         HUDManager.Instance.DisplayTip("LotTa Outcome", "Aww, you got explosion!");
                         playerHeldBy.activatingItem = false;
-                        if (NetworkObject.IsSpawned)
-                            playerHeldBy.DiscardHeldObject();
+                        playerHeldBy.DespawnHeldObject();
 
                     }
                     Utils.Explode(transform.position, 10);
@@ -98,8 +97,7 @@ namespace LethalBoomba.Behaviors
                     {
                         HUDManager.Instance.DisplayTip("LotTa Outcome", "Aww, you got random enemy spawned on you!");
                         playerHeldBy.activatingItem = false;
-                        if (NetworkObject.IsSpawned)
-                            playerHeldBy.DiscardHeldObject();
+                        playerHeldBy.DespawnHeldObject();
                     }
                     Utils.HideNetObject(gameObject);
                     yield break;
@@ -108,8 +106,7 @@ namespace LethalBoomba.Behaviors
                     {
                         HUDManager.Instance.DisplayTip("LotTa Outcome", "Aww, you got random trap spawned on you!");
                         playerHeldBy.activatingItem = false;
-                        if (NetworkObject.IsSpawned)
-                            playerHeldBy.DiscardHeldObject();
+                        playerHeldBy.DespawnHeldObject();
                     }
                     Utils.HideNetObject(gameObject);
                     yield break;
@@ -186,20 +183,14 @@ namespace LethalBoomba.Behaviors
             {
                 case LottaOutcome.Opts.Explosion:
                     yield return ProcessState(selOpt);
-                    yield return new WaitForSeconds(1); // 1s of buffers
-                    GetComponent<NetworkObject>().Despawn();
                     break;
                 case LottaOutcome.Opts.RandEnemy:
                     yield return ProcessState(selOpt);
                     LottaOutcome.spawnRandEnemy(owner, transform.position, !owner.isInsideFactory);
-                    yield return new WaitForSeconds(1);
-                    GetComponent<NetworkObject>().Despawn();
                     break;
                 case LottaOutcome.Opts.RandTrap:
                     yield return ProcessState(selOpt);
                     LottaOutcome.spawnRandTrap(owner, transform.position);
-                    yield return new WaitForSeconds(1);
-                    GetComponent<NetworkObject>().Despawn();
                     break;
                 default:
                     yield return ProcessState(selOpt);

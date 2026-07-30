@@ -41,7 +41,7 @@ namespace LethalBoomba.Behaviors
             if (!StartOfRound.Instance.shipHasLanded)
             {
                 if (base.IsOwner)
-                    HUDManager.Instance.DisplayTip("DruGa Outcome", "Drug isn't tasty enough while in ship :P");
+                    HUDManager.Instance.DisplayTip("DruGa Outcome", "This drug isn't tasty enough while in the ship :P");
                 return;
             }
             if (base.IsOwner)
@@ -67,6 +67,7 @@ namespace LethalBoomba.Behaviors
                 {
                     HUDManager.Instance.DisplayTip("DruGa Outcome", "Oops, you got unlucky :(");
                     playerHeldBy.activatingItem = false;
+                    playerHeldBy.DespawnHeldObject();
                 }
                 Utils.Explode(transform.position, 10);
                 Utils.HideNetObject(gameObject);
@@ -105,8 +106,10 @@ namespace LethalBoomba.Behaviors
                     break;
             }
 
+            
             if (base.IsOwner)
                 playerHeldBy.activatingItem = false;
+            playerHeldBy.DespawnHeldObject();
             Utils.HideNetObject(gameObject);
             yield break;
         }
@@ -114,15 +117,8 @@ namespace LethalBoomba.Behaviors
         [Rpc(SendTo.Server)]
         void RequestUsageServerRpc()
         {
-            StartCoroutine(HandleCleanup());
-        }
-
-        IEnumerator HandleCleanup()
-        {
             // Surprisingly, that's it...
             RawState.Value = DruGaHelper.GetRNGState();
-            yield return new WaitForSeconds(1.5f);
-            GetComponent<NetworkObject>().Despawn();
         }
     }
 
