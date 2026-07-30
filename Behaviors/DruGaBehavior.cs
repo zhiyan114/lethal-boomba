@@ -38,6 +38,12 @@ namespace LethalBoomba.Behaviors
         public override void ItemActivate(bool used, bool buttonDown = true)
         {
             if (playerHeldBy.activatingItem) return;
+            if (!StartOfRound.Instance.shipHasLanded)
+            {
+                if (base.IsOwner)
+                    HUDManager.Instance.DisplayTip("DruGa Outcome", "Drug isn't tasty enough while in ship :P");
+                return;
+            }
             if (base.IsOwner)
                 playerHeldBy.activatingItem = true;
             StartCoroutine(ProcessActivation());

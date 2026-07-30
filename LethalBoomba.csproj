@@ -15,6 +15,10 @@
 		<Exec ConsoleToMsBuild="True" Command="netcode-patch -uv 2022.3.62 -nv 1.12.2 -tv 1.0.0 &quot;$(TargetPath)&quot; @(ReferencePathWithRefAssemblies->'&quot;%(Identity)&quot;', ' ')" />
 	</Target>
 
+	<ItemGroup>
+	  <Compile Include="SaveManager.cs.disable" />
+	</ItemGroup>
+
   <ItemGroup>
     <Reference Include="0Harmony">
       <HintPath>C:\Users\zhiyan114\AppData\Roaming\r2modmanPlus-local\LethalCompany\profiles\DevKit 2\BepInEx\core\0Harmony.dll</HintPath>
@@ -24,6 +28,9 @@
     </Reference>
     <Reference Include="BepInEx">
       <HintPath>C:\Users\zhiyan114\AppData\Roaming\r2modmanPlus-local\LethalCompany\profiles\DevKit 2\BepInEx\core\BepInEx.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>E:\Program Files (x86)\Steam\steamapps\common\Lethal Company\Lethal Company_Data\Managed\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Collections">
       <HintPath>E:\Program Files (x86)\Steam\steamapps\common\Lethal Company\Lethal Company_Data\Managed\Unity.Collections.dll</HintPath>

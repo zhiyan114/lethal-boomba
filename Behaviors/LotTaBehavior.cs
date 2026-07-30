@@ -173,7 +173,7 @@ namespace LethalBoomba.Behaviors
             }
             ulong senderClientId = rpcParam.Receive.SenderClientId;
             PlayerControllerB owner = StartOfRound.Instance.allPlayerScripts
-    .FirstOrDefault(p => p.OwnerClientId == senderClientId);
+                .FirstOrDefault(p => p.OwnerClientId == senderClientId);
             StartCoroutine(ExecuteReq(owner));
         }
 
