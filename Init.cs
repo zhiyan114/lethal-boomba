@@ -31,7 +31,8 @@ namespace LethalBoomba
 
             // Stuff here that should be executed early, but breaks if way too early
             Utils.ExecuteRuntimeInitAttr(typeof(LottaOutcome));
-            
+            Utils.ExecuteRuntimeInitAttr(typeof(DruGaHelper));
+
             // Setup Items
             ItemManager.AddItem<BoomBaBehavior>("Assets/AssetBundles/BombToolkit/BoomBa/B00mbaProp.asset", 60);
             ItemManager.AddItem<NuKaBehavior>("Assets/AssetBundles/BombToolkit/NukeKa/NuKaProp.asset", 30);
@@ -42,7 +43,7 @@ namespace LethalBoomba
             harmony.PatchAll(typeof(ItemManager));
             harmony.PatchAll(typeof(LottaOutcome));
             harmony.PatchAll(typeof(UtilHelper));
-            harmony.PatchAll(typeof(PlayerPatcher));
+            harmony.PatchAll(typeof(DruGaHelper));
             logger.LogInfo("Patch Done...");
 
             // Setup NetVariable

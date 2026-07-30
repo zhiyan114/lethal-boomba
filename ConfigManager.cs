@@ -27,7 +27,7 @@ namespace LethalBoomba
         public static ConfigEntry<float> Lotta_x5MultiChance;
         [FloatValidation(0)]
         public static ConfigEntry<float> Lotta_x10MultiChance;
-        [FloatValidation(0)]
+        [FloatValidation(0, 100)]
         public static ConfigEntry<float> Druga_ExplodeChance;
         [FloatValidation(0)]
         public static ConfigEntry<float> Druga_x0_5MultiChance;
@@ -58,7 +58,7 @@ namespace LethalBoomba
             Lotta_x10MultiChance = Init.config.Bind<float>("lotta.host", "x10MultiChance", 1.5f, "The weight/chance for a scratched lotta to have x10 multiplier");
 
             // Druga Item
-            Druga_ExplodeChance = Init.config.Bind<float>("druga.host", "ExplodeChance", 30f, "The weight/chance for the in-take drug to explode");
+            Druga_ExplodeChance = Init.config.Bind<float>("druga.host", "ExplodeChance", 30f, "The percentage (up to value of 100 + 2 dec place) for the in-take drug to explode");
             Druga_x0_5MultiChance = Init.config.Bind<float>("druga.host", "x0_5MultiChance", 50f, "The weight/chance for the player stat to reduce by half");
             Druga_x0_75MultiChance = Init.config.Bind<float>("druga.host", "x0_75MultiChance", 25f, "The weight/chance for the player stat to reduce by a quarter");
             Druga_x1MultiChance = Init.config.Bind<float>("druga.host", "x1MultiChance", 15f, "The weight/chance for the player stat to have zero effects");
