@@ -89,7 +89,7 @@ namespace LethalBoomba.Behaviors
                     }
                     Utils.Explode(transform.position, 10);
                     Utils.HideNetObject(gameObject);
-                    if(IsOwner) playerHeldBy.DespawnHeldObject();
+                    if (IsOwner) playerHeldBy.DespawnHeldObject();
                     yield break;
                 case LottaOutcome.Opts.RandEnemy:
                     if (this.IsOwner)
