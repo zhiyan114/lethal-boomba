@@ -86,11 +86,10 @@ namespace LethalBoomba.Behaviors
                     {
                         HUDManager.Instance.DisplayTip("LotTa Outcome", "Aww, you got explosion!");
                         playerHeldBy.activatingItem = false;
-                        playerHeldBy.DespawnHeldObject();
-
                     }
                     Utils.Explode(transform.position, 10);
                     Utils.HideNetObject(gameObject);
+                    if(IsOwner) playerHeldBy.DespawnHeldObject();
                     yield break;
                 case LottaOutcome.Opts.RandEnemy:
                     if (this.IsOwner)

@@ -67,10 +67,10 @@ namespace LethalBoomba.Behaviors
                 {
                     HUDManager.Instance.DisplayTip("DruGa Outcome", "Oops, you got unlucky :(");
                     playerHeldBy.activatingItem = false;
-                    playerHeldBy.DespawnHeldObject();
                 }
                 Utils.Explode(transform.position, 10);
                 Utils.HideNetObject(gameObject);
+                if (IsOwner) playerHeldBy.DespawnHeldObject();
                 yield break;
             }
 
